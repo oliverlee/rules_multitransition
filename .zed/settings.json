@@ -1,0 +1,31 @@
+//
+// For a full list of overridable settings, and general information on folder-specific settings,
+// see the documentation: https://zed.dev/docs/configuring-zed#settings-files
+{
+  "format_on_save": "off",
+  "file_scan_exclusions": [".cache/"],
+  "languages": {
+    "Starlark": {
+      "enable_language_server": true,
+      "language_servers": ["starpls"],
+      "formatter": {
+        "external": {
+          "command": "./bazel-out/../external/buildifier_prebuilt++buildifier_prebuilt_deps_extension+buildifier_darwin_arm64/file/buildifier",
+          "arguments": ["--path", "{buffer_path}"]
+        }
+      }
+    }
+  },
+  "lsp": {
+    "starpls": {
+      "binary": {
+        "arguments": [
+          "server",
+          "--experimental_enable_label_completions",
+          "--experimental_use_code_flow_analysis",
+          "--experimental_infer_ctx_attributes"
+        ]
+      }
+    }
+  }
+}

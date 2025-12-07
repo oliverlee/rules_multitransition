@@ -1,0 +1,23 @@
+load("@bazel_skylib//rules:common_settings.bzl", "bool_flag")
+
+bool_flag(
+    name = "multitransition_test",
+    build_setting_default = True,
+    visibility = ["//visibility:public"],
+)
+
+config_setting(
+    name = "multitransition_test_enabled",
+    flag_values = {
+        ":multitransition_test": "True",
+    },
+    visibility = ["//visibility:public"],
+)
+
+config_setting(
+    name = "multitransition_test_disabled",
+    flag_values = {
+        ":multitransition_test": "False",
+    },
+    visibility = ["//visibility:public"],
+)
