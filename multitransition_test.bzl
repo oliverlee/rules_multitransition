@@ -73,6 +73,12 @@ def multitransition_test(
         tags = tags_with_manual,
         timeout = timeout,
         size = size,
+        target_compatible_with = select({
+            Label("//config:multitransition_test_enabled"): [],
+            Label("//config:multitransition_test_disabled"): [
+                "@platforms//:incompatible",
+            ],
+        }),
         **kwargs
     )
 
