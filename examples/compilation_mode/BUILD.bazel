@@ -1,0 +1,44 @@
+load("@bazel_skylib//rules:expand_template.bzl", "expand_template")
+load("@local_workspace_directory//:defs.bzl", "WORKSPACE_ROOT")
+load("@rules_cc//cc:defs.bzl", "cc_test")
+load(
+    "@rules_multitransition//:defs.bzl",
+    "multitransition_test",
+    "transition_config",
+)
+load("@rules_shell//shell:sh_test.bzl", "sh_test")
+
+multitransition_test(
+    cc_test,
+    name = "compilation_mode_test",
+    srcs = ["dummy.cpp"],
+    transitions = [
+        transition_config(
+            name = "dbg",
+            compilation_mode = "dbg",
+        ),
+        transition_config(
+            name = "opt",
+            compilation_mode = "opt",
+        ),
+    ],
+)
+
+[
+    sh_test(
+        name = "uses_{}_compile_flags_test".format(flavor),
+        srcs = ["check_flag.bash"],
+        args = [
+            WORKSPACE_ROOT,
+            ":compilation_mode_test.{}".format(flavor),
+            flag,
+        ],
+        env_inherit = [
+            "HOME",
+        ],
+    )
+    for flavor, flag in [
+        ("dbg", "-g"),
+        ("opt", "-O2"),
+    ]
+]

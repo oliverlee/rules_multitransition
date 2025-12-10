@@ -10,7 +10,7 @@
       "language_servers": ["starpls"],
       "formatter": {
         "external": {
-          "command": "./bazel-out/../external/buildifier_prebuilt++buildifier_prebuilt_deps_extension+buildifier_darwin_arm64/file/buildifier",
+          "command": "./bazel-out/../../../external/buildifier_prebuilt++buildifier_prebuilt_deps_extension+buildifier_darwin_arm64/file/buildifier",
           "arguments": ["--path", "{buffer_path}"]
         }
       }
