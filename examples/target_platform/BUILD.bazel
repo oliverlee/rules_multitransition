@@ -1,0 +1,35 @@
+load("@cortex_m//rules:transitions.bzl", "transition_config_test")
+load("@rules_cc//cc:defs.bzl", "cc_test")
+load(
+    "@rules_multitransition//:defs.bzl",
+    "multitransition_test",
+    "transition_config",
+)
+
+# create a base cc_test target
+cc_test(
+    name = "target_platform_base",
+    srcs = ["info.cpp"],
+    tags = ["manual"],
+)
+
+# transition_config_test is used to enable semihosting -- which enables printing
+# for the cortex-m3 toolchain
+#
+# output can be observed with
+# bazel test --test_output=all //...
+multitransition_test(
+    transition_config_test,
+    name = "target_platform_test",
+    src = ":target_platform_base",
+    transitions = [
+        transition_config(
+            name = "host",
+            platforms = "@platforms//host",
+        ),
+        transition_config(
+            name = "cortex-m3",
+            platforms = "@cortex_m//platform:lm3s6965evb",
+        ),
+    ],
+)

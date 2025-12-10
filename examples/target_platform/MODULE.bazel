@@ -1,0 +1,51 @@
+bazel_dep(
+    name = "cortex_m",
+    dev_dependency = True,
+)
+bazel_dep(
+    name = "platforms",
+    version = "1.0.0",
+    dev_dependency = True,
+)
+bazel_dep(
+    name = "rules_cc",
+    version = "0.2.14",
+    dev_dependency = True,
+)
+bazel_dep(
+    name = "rules_multitransition",
+    dev_dependency = True,
+)
+bazel_dep(
+    name = "toolchains_arm_gnu",
+    dev_dependency = True,
+)
+
+#[
+#    archive_override(
+#        module_name = "cortex_m",
+#        integrity = "sha256-RCBK+5PFoY950AbzLU7AmyqE8rVOmGN9Pkxw2YWXXhk=",
+#        strip_prefix = "cortex_m-{}".format(commit),
+#        url = "https://github.com/oliverlee/cortex_m/archive/{}.tar.gz".format(commit),
+#    )
+#    for commit in ["37981beef61a75c26672e9330c1cf6da875af7bc"]
+#]
+local_path_override(
+    module_name = "cortex_m",
+    path = "../../../cortex_m",
+)
+[
+    archive_override(
+        module_name = "toolchains_arm_gnu",
+        integrity = "sha256-surv16TjyDtSebSX8fdj85TVnC8wGjIthEk3uHlKvFs=",
+        strip_prefix = "toolchains_arm_gnu-{}".format(commit),
+        url = "https://github.com/hexdae/toolchains_arm_gnu/archive/{}.tar.gz".format(commit),
+    )
+    for commit in ["1abff3e6a5f894d0545654800ee0db6ea24a76a3"]
+]
+
+
+local_path_override(
+    module_name = "rules_multitransition",
+    path = "../../",
+)
