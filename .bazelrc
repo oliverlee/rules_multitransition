@@ -1,0 +1,5 @@
+common --experimental_repository_cache_hardlinks
+common --repo_env=BAZEL_USE_CPP_ONLY_TOOLCHAIN=1
+common --repo_env=BAZEL_USE_XCODE_TOOLCHAIN=0
+
+test --test_output=errors
