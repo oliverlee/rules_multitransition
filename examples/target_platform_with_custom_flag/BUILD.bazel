@@ -1,0 +1,23 @@
+load("@rules_cc//cc:defs.bzl", "cc_test")
+load(
+    "@rules_multitransition//:defs.bzl",
+    "multitransition_test",
+)
+load("transition_config.bzl", "transition_config")
+
+multitransition_test(
+    cc_test,
+    name = "target_platform_test",
+    srcs = ["info.cpp"],
+    transitions = [
+        transition_config(
+            name = "host",
+            platforms = "@platforms//host",
+        ),
+        transition_config(
+            name = "cortex-m3",
+            platforms = "@cortex_m//platform:lm3s6965evb",
+            semihosting = True,
+        ),
+    ],
+)
