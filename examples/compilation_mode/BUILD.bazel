@@ -1,4 +1,3 @@
-load("@bazel_skylib//rules:expand_template.bzl", "expand_template")
 load("@local_workspace_directory//:defs.bzl", "BAZEL_WORKSPACE_ROOT")
 load("@rules_cc//cc:defs.bzl", "cc_test")
 load(

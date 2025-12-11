@@ -1,3 +1,7 @@
+"""
+provides a 'transition_config' with a custom flag
+"""
+
 load(
     "@rules_multitransition//:defs.bzl",
     "DEFAULT_TRANSITION_CONFIG_FLAGS",

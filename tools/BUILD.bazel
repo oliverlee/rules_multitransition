@@ -3,6 +3,9 @@ load("@buildifier_prebuilt//:rules.bzl", "buildifier")
 buildifier(
     name = "buildifier",
     lint_mode = "warn",
+    lint_warnings = [
+        "-positional-args",
+    ],
     mode = "fix",
     tags = ["manual"],
 )

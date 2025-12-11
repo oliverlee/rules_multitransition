@@ -24,7 +24,10 @@ load("@rules_shell//shell:sh_test.bzl", "sh_test")
         tags = ["local"],
     )
     for example, extra_data in [
-        ("compilation_mode", []),
+        (
+            "compilation_mode",
+            [],
+        ),
         (
             "target_platform",
             [
