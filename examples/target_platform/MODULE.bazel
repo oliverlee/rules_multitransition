@@ -21,19 +21,15 @@ bazel_dep(
     dev_dependency = True,
 )
 
-#[
-#    archive_override(
-#        module_name = "cortex_m",
-#        integrity = "sha256-RCBK+5PFoY950AbzLU7AmyqE8rVOmGN9Pkxw2YWXXhk=",
-#        strip_prefix = "cortex_m-{}".format(commit),
-#        url = "https://github.com/oliverlee/cortex_m/archive/{}.tar.gz".format(commit),
-#    )
-#    for commit in ["37981beef61a75c26672e9330c1cf6da875af7bc"]
-#]
-local_path_override(
-    module_name = "cortex_m",
-    path = "../../../cortex_m",
-)
+[
+    archive_override(
+        module_name = "cortex_m",
+        integrity = "sha256-RCBK+5PFoY950AbzLU7AmyqE8rVOmGN9Pkxw2YWXXhk=",
+        strip_prefix = "cortex_m-{}".format(commit),
+        url = "https://github.com/oliverlee/cortex_m/archive/{}.tar.gz".format(commit),
+    )
+    for commit in ["37981beef61a75c26672e9330c1cf6da875af7bc"]
+]
 [
     archive_override(
         module_name = "toolchains_arm_gnu",
