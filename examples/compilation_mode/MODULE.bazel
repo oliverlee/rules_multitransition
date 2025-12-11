@@ -1,0 +1,33 @@
+bazel_dep(
+    name = "bazel_skylib",
+    version = "1.8.2",
+    dev_dependency = True,
+)
+bazel_dep(
+    name = "rules_cc",
+    version = "0.2.14",
+    dev_dependency = True,
+)
+bazel_dep(
+    name = "rules_shell",
+    version = "0.6.1",
+    dev_dependency = True,
+)
+bazel_dep(
+    name = "rules_multitransition",
+    dev_dependency = True,
+)
+local_path_override(
+    module_name = "rules_multitransition",
+    path = "../../",
+)
+
+local_config = use_extension(
+    "//:local_config.bzl",
+    "local_config",
+    dev_dependency = True,
+)
+use_repo(
+    local_config,
+    "local_workspace_directory",
+)

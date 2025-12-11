@@ -61,7 +61,7 @@ def multitransition_test(
         size = size,
         target_compatible_with = select({
             Label("//config:multitransition_test_enabled"): [
-                "@platforms//:incompatible",
+                Label("@platforms//:incompatible"),
             ],
             Label("//config:multitransition_test_disabled"): [],
         }),
@@ -76,7 +76,7 @@ def multitransition_test(
         target_compatible_with = select({
             Label("//config:multitransition_test_enabled"): [],
             Label("//config:multitransition_test_disabled"): [
-                "@platforms//:incompatible",
+                Label("@platforms//:incompatible"),
             ],
         }),
         **kwargs
@@ -104,7 +104,7 @@ def multitransition_test(
                 "target_compatible_with": select({
                     Label("//config:multitransition_test_enabled"): [],
                     Label("//config:multitransition_test_disabled"): [
-                        "@platforms//:incompatible",
+                        Label("@platforms//:incompatible"),
                     ],
                 }),
             } | config.attrs)
