@@ -1,5 +1,5 @@
 load("@bazel_skylib//rules:expand_template.bzl", "expand_template")
-load("@local_workspace_directory//:defs.bzl", "WORKSPACE_ROOT")
+load("@local_workspace_directory//:defs.bzl", "BAZEL_WORKSPACE_ROOT")
 load("@rules_cc//cc:defs.bzl", "cc_test")
 load(
     "@rules_multitransition//:defs.bzl",
@@ -29,13 +29,14 @@ multitransition_test(
         name = "uses_{}_compile_flags_test".format(flavor),
         srcs = ["check_flag.bash"],
         args = [
-            WORKSPACE_ROOT,
+            BAZEL_WORKSPACE_ROOT,
             ":compilation_mode_test.{}".format(flavor),
             flag,
         ],
         env_inherit = [
             "HOME",
         ],
+        tags = ["local"],
     )
     for flavor, flag in [
         ("dbg", "-g"),

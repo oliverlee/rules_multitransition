@@ -1,0 +1,41 @@
+load(
+    "@local_workspace_directory//:defs.bzl",
+    "BAZEL_EXTERNAL_DIRECTORY",
+    "BAZEL_WORKSPACE_ROOT",
+)
+load("@rules_shell//shell:sh_test.bzl", "sh_test")
+
+[
+    sh_test(
+        name = "{}_test".format(example),
+        srcs = ["run_example.bash"],
+        args = [
+            BAZEL_WORKSPACE_ROOT + "/examples/{}".format(example),
+            BAZEL_EXTERNAL_DIRECTORY,
+        ],
+        # 'data' is used to prime 'BAZEL_EXTERNAL_DIRECTORY', which is then
+        # shared as the 'vendor_dir` for nested Bazel invocations. This avoids
+        # the need to download external repos and toolchain archives for *each*
+        # example.
+        data = [
+            "@local_config_cc//:cc_wrapper",
+        ] + extra_data,
+        env_inherit = ["HOME"],
+        tags = ["local"],
+    )
+    for example, extra_data in [
+        ("compilation_mode", []),
+        (
+            "target_platform",
+            [
+                "@@toolchains_arm_gnu++arm_toolchain+arm_none_eabi//:gcc",
+            ],
+        ),
+        (
+            "target_platform_with_custom_flag",
+            [
+                "@@toolchains_arm_gnu++arm_toolchain+arm_none_eabi//:gcc",
+            ],
+        ),
+    ]
+]

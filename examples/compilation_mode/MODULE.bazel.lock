@@ -143,7 +143,7 @@
   "moduleExtensions": {
     "//:local_config.bzl%local_config": {
       "general": {
-        "bzlTransitiveDigest": "79xxiy5Ka35AhkfM5gdBKrlH0ehqHBWi8YdBtckej0Q=",
+        "bzlTransitiveDigest": "sqkbW831HXcEkAFz2C1ArpbLL3HPvCcQovsiDDOFo9Q=",
         "usagesDigest": "oMzoCZVyhJvYAQgcM2fPhd1Oz6xsXpDTKe9U0X85eoY=",
         "recordedFileInputs": {},
         "recordedDirentsInputs": {},
