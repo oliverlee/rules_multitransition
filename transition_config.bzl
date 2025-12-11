@@ -80,7 +80,16 @@ def _make_transition(flag_config):
             flag = flags[key]
             value = getattr(attr, flag.name)
 
-            if type(value) == "list":
+            # platforms can only be a single element list
+            # https://github.com/bazelbuild/bazel/issues/10154
+            if flag.option == "//command_line_option:platforms":
+                if type(value) == "list":
+                    if (len(value) != 1):
+                        fail("platforms must be a single element list")
+                    updated[flag.option] = value
+                else:
+                    updated[flag.option] = [value]
+            elif type(value) == "list":
                 updated[flag.option] = settings[flag.option] + value
             else:
                 updated[flag.option] = value
@@ -193,7 +202,7 @@ default_transition_config_flags = [
     )
     for kind, name in [
         ("label_list", "extra_toolchains"),
-        ("label_list", "platforms"),
+        ("label", "platforms"),
         ("string", "compilation_mode"),
         ("string_list", "copt"),
         ("string_list", "cxxopt"),
