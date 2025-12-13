@@ -2,4 +2,19 @@ common --experimental_repository_cache_hardlinks
 common --repo_env=BAZEL_USE_CPP_ONLY_TOOLCHAIN=1
 common --repo_env=BAZEL_USE_XCODE_TOOLCHAIN=0
 
+build:remote-cache --bes_results_url=https://oliverlee.buildbuddy.io/invocation/
+build:remote-cache --bes_backend=grpcs://oliverlee.buildbuddy.io
+build:remote-cache --bes_upload_mode=fully_async
+build:remote-cache --remote_cache=grpcs://oliverlee.buildbuddy.io
+build:remote-cache --remote_timeout=10m
+build:remote-cache --remote_build_event_upload=minimal
+build:remote-cache --remote_download_outputs=minimal
+build:remote-cache --remote_cache_compression
+build:remote-cache --slim_profile=false
+build:remote-cache --experimental_profile_include_primary_output
+build:remote-cache --experimental_profile_include_target_label
+build:remote-cache --legacy_important_outputs=false
+
 test --test_output=errors
+
+try-import %workspace%/user.bazelrc
