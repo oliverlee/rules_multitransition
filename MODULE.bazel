@@ -22,12 +22,12 @@ bazel_dep(
     dev_dependency = True,
 )
 bazel_dep(
-    name = "rules_shell",
-    version = "0.6.1",
+    name = "cortex_m",
     dev_dependency = True,
 )
 bazel_dep(
-    name = "cortex_m",
+    name = "rules_shell",
+    version = "0.6.1",
     dev_dependency = True,
 )
 bazel_dep(
@@ -63,14 +63,4 @@ local_config = use_extension(
 use_repo(
     local_config,
     "local_workspace_directory",
-)
-
-cc_configure = use_extension(
-    "@rules_cc//cc:extensions.bzl",
-    "cc_configure_extension",
-    dev_dependency = True,
-)
-use_repo(
-    cc_configure,
-    "local_config_cc",
 )

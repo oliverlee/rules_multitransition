@@ -9,6 +9,7 @@ cd "$workspace_root"
 
 bazelisk aquery \
     "mnemonic(CppCompile, deps($target))" \
+    --color=yes \
     --curses=yes \
     --output=jsonproto \
     "${BAZEL_VENDOR_DIR:+--vendor_dir="$BAZEL_VENDOR_DIR"}" \

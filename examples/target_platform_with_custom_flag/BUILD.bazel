@@ -3,7 +3,7 @@ load(
     "@rules_multitransition//:defs.bzl",
     "multitransition_test",
 )
-load("transition_config.bzl", "transition_config")
+load(":transition_config.bzl", "transition_config")
 
 multitransition_test(
     cc_test,
