@@ -29,7 +29,10 @@ multitransition_test(
         srcs = ["check_flag.bash"],
         args = [
             BAZEL_WORKSPACE_ROOT,
-            ":compilation_mode_test.{}".format(flavor),
+            "//{}:compilation_mode_test.{}".format(
+                package_name(),
+                flavor,
+            ),
             flag,
         ],
         env_inherit = [
