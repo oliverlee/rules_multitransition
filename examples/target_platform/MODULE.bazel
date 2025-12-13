@@ -26,7 +26,9 @@ bazel_dep(
         module_name = "cortex_m",
         integrity = "sha256-RCBK+5PFoY950AbzLU7AmyqE8rVOmGN9Pkxw2YWXXhk=",
         strip_prefix = "cortex_m-{}".format(commit),
-        url = "https://github.com/oliverlee/cortex_m/archive/{}.tar.gz".format(commit),
+        urls = [
+            "https://github.com/oliverlee/cortex_m/archive/{}.tar.gz".format(commit),
+        ],
     )
     for commit in ["37981beef61a75c26672e9330c1cf6da875af7bc"]
 ]
@@ -36,7 +38,9 @@ bazel_dep(
         module_name = "toolchains_arm_gnu",
         integrity = "sha256-CM6gtNvZ3Yd2/psrpyFIHi4nDQkoTSKb5jMRD4JiHxU=",
         strip_prefix = "toolchains_arm_gnu-{}".format(commit),
-        url = "https://github.com/hexdae/toolchains_arm_gnu/archive/{}.tar.gz".format(commit),
+        urls = [
+            "https://github.com/hexdae/toolchains_arm_gnu/archive/{}.tar.gz".format(commit),
+        ],
     )
     for commit in ["76837cb143e98566008eab52e0003a49b6d18e7e"]
 ]
