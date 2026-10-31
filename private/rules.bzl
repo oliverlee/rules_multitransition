@@ -1,11 +1,11 @@
 """
 Transitioned target, binary, and test rules.
 
-The transition can set the options in `OPTIONS`, which the `multitransition`
+The transition can set the options in `OPTIONS`, which the `multitransition_config`
 module extension generates from the declarations in the module graph.
 """
 
-load("@multitransition_options//:defs.bzl", _OPTIONS = "OPTIONS")
+load("@multitransition_config//:defs.bzl", _OPTIONS = "OPTIONS")
 load("@rules_cc//cc/common:cc_info.bzl", "CcInfo")
 load("@rules_cc//cc/common:debug_package_info.bzl", "DebugPackageInfo")
 

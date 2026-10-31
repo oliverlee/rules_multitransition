@@ -1,26 +1,22 @@
 load("@rules_cc//cc:defs.bzl", "cc_test")
-load(
-    "@rules_multitransition//:defs.bzl",
-    "multitransition_test",
-    "transition_config",
-)
+load("@rules_multitransition//:defs.bzl", "multitransition")
 load("@rules_multitransition_test//:compile_flags_test.bzl", "compile_flags_test")
 
 # 'treat_warnings_as_errors' adds '-Werror' to compile actions with the
 # default rules_cc toolchain.
-multitransition_test(
+multitransition.test(
     cc_test,
     name = "features_test",
     srcs = ["dummy.cpp"],
     transitions = [
-        transition_config(
+        multitransition.transition(
             name = "enabled",
             features = ["treat_warnings_as_errors"],
         ),
         # A negative feature overrides a positive one, so the disable also
         # applies when the feature is enabled earlier, e.g. on the command
         # line.
-        transition_config(
+        multitransition.transition(
             name = "disabled",
             features = [
                 "treat_warnings_as_errors",

@@ -5,32 +5,28 @@ This is especially useful when testing a project with multiple toolchains.
 
 ## Usage
 
-Setup the test with the desired configuration by using `multitransition_test`
+Setup the test with the desired configuration by using `multitransition.test`
 
 ```bzl
 # //:BUILD.bazel
 load("@rules_cc//cc:cc_test.bzl", "cc_test")
-load(
-    "@rules_multitransition//:defs.bzl",
-    "multitransition_test",
-    "transition_config",
-)
+load("@rules_multitransition//:defs.bzl", "multitransition")
 
-multitransition_test(
+multitransition.test(
     cc_test,
     name = "my_test",
     transitions = [
-        transition_config(
+        multitransition.transition(
             name = "gcc-dbg",
             compilation_mode = "dbg",
             extra_toolchains = ["@gcc_toolchain//:..."],
         ),
-        transition_config(
+        multitransition.transition(
             name = "llvm-dbg",
             compilation_mode = "dbg",
             extra_toolchains = ["@llvm_toolchain//:..."],
         ),
-        transition_config(
+        multitransition.transition(
             name = "gcc-opt",
             compilation_mode = "opt",
             extra_toolchains = ["@gcc_toolchain//:..."],
@@ -48,14 +44,10 @@ or wrapping it with a macro
 ```bzl
 # //:cc_multi_test.bzl
 load("@rules_cc//cc:cc_test.bzl", "cc_test")
-load(
-    "@rules_multitransition//:defs.bzl",
-    "multitransition_test",
-    "transition_config",
-)
+load("@rules_multitransition//:defs.bzl", "multitransition")
 
 default_transitions = [
-    transition_config(...),
+    multitransition.transition(...),
     ...
 ]
 
@@ -63,7 +55,7 @@ def cc_multi_test(
     *,
     transitions = default_transitions,
     **kwargs):
-    multitransition_test(
+    multitransition.test(
         cc_test,
         transitions = transitions,
         **kwargs
@@ -73,7 +65,7 @@ def cc_multi_test(
 
 ### Options
 
-`transition_config` can set these native options as keyword arguments
+`multitransition.transition` can set these native options as keyword arguments
 without any setup: `compilation_mode`, `copt`, `cxxopt`, `extra_toolchains`,
 `features`, `linkopt`, `platform` (a single label, sets `--platforms`).
 
@@ -83,25 +75,25 @@ combined:
 
 ```bzl
 # MODULE.bazel
-multitransition = use_extension(
+multitransition_config = use_extension(
     "@rules_multitransition//:extensions.bzl",
-    "multitransition",
+    "multitransition_config",
     dev_dependency = True,
 )
-multitransition.flag(setting = "@cortex_m//config:semihosting")
-multitransition.command_line_option(name = "conlyopt")
+multitransition_config.flag(setting = "@cortex_m//config:semihosting")
+multitransition_config.command_line_option(name = "conlyopt")
 ```
 
 Use `dev_dependency = True` when the declarations are only needed for your
 own tests. Omit it if your module provides a macro around
-`multitransition_test` that other modules call with these options, so the
+`multitransition.test` that other modules call with these options, so the
 declarations apply when your module is a dependency.
 
 Native options are passed as keyword arguments and build settings in
 `flags`:
 
 ```bzl
-transition_config(
+multitransition.transition(
     name = "cortex-m3",
     platform = "@cortex_m//platform:lm3s6965evb",
     flags = {
@@ -120,7 +112,7 @@ command line, but can't enable a feature disabled on the command line. See
 
 ### Running
 
-Run all the `multitransition_test` targets with Bazel:
+Run all the `multitransition.test` targets with Bazel:
 
 ```sh
 $ bazel test //...
