@@ -16,14 +16,19 @@ jobs:
         os:
           - 'ubuntu-latest'
           - 'macos-latest'
+        bazel:
+          - ''  # pinned in .bazeliskrc
+          - '9.x'
     runs-on: ${{ matrix.os }}
+    env:
+      USE_BAZEL_VERSION: ${{ matrix.bazel }}
     steps:
     - uses: actions/checkout@v4
     - uses: ./.github/actions/ci-env-setup
       with:
         buildbuddy-api-key: ${{ secrets.BUILDBUDDY_API_KEY }}
     - run: |
-        bazel test //...
+        bazel test //... ${{ matrix.bazel && '--lockfile_mode=off' || '' }}
 
   buildifier:
     runs-on: ubuntu-latest

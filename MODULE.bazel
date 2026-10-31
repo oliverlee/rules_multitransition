@@ -9,7 +9,7 @@ bazel_dep(
 )
 bazel_dep(
     name = "rules_cc",
-    version = "0.2.14",
+    version = "0.2.17",
 )
 bazel_dep(
     name = "platforms",
@@ -45,6 +45,13 @@ bazel_dep(
     archive_override(
         module_name = "cortex_m",
         integrity = "sha256-RCBK+5PFoY950AbzLU7AmyqE8rVOmGN9Pkxw2YWXXhk=",
+        patch_cmds = [
+            # `xcode_config` is not a builtin in Bazel 9
+            "sed -i.orig '/^xcode_config(/d' BUILD.bazel",
+            # Bazel 9 provides `runfiles.bash` at the legacy path only via
+            # root symlinks in `default_runfiles`, not in `files`
+            "perl -0pi -e 's/\\n\\s*transitive_files = ctx.attr._runfiles.files,\\n\\s*\\)/\\n            ).merge(ctx.attr._runfiles[DefaultInfo].default_runfiles)/' rules/qemu_runner.bzl",
+        ],
         strip_prefix = "cortex_m-{}".format(commit),
         urls = [
             "https://github.com/oliverlee/cortex_m/archive/{}.tar.gz".format(commit),
@@ -56,13 +63,16 @@ bazel_dep(
 [
     archive_override(
         module_name = "toolchains_arm_gnu",
-        integrity = "sha256-CM6gtNvZ3Yd2/psrpyFIHi4nDQkoTSKb5jMRD4JiHxU=",
+        integrity = "sha256-QKl/PAnjE4O4IEKIwImJIT3ihjtWHPTY9h5FBg7yKFQ=",
+        # `@local_config_platform` is removed in Bazel 9
+        # https://github.com/hexdae/toolchains_arm_gnu/pull/99
+        patch_cmds = ["sed -i.orig 's|@local_config_platform//:constraints.bzl|@platforms//host:constraints.bzl|' toolchain/templates/toolchain.bazel"],
         strip_prefix = "toolchains_arm_gnu-{}".format(commit),
         urls = [
             "https://github.com/hexdae/toolchains_arm_gnu/archive/{}.tar.gz".format(commit),
         ],
     )
-    for commit in ["76837cb143e98566008eab52e0003a49b6d18e7e"]
+    for commit in ["6895733b87d3a75a40056b12c3d6628bc6945011"]
 ]
 
 bazel_dep(
