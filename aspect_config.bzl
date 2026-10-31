@@ -19,8 +19,8 @@ def aspect_config(*, aspect, output_group):
     Args:
       aspect: string
         The aspect as '<bzl file>%<name>', e.g.
-        '@rules_clang_tidy//:aspects.bzl%check'. It must be declared with
-        'multitransition_config.aspect' in MODULE.bazel.
+        '@rules_clang_tidy//:aspects.bzl%check'. It must be added in MODULE.bazel
+        with 'multitransition_config.extend(aspects = [...])'.
       output_group: string
         The output group of 'aspect' to use as the default output, e.g.
         'report'.

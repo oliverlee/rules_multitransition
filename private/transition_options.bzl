@@ -84,9 +84,9 @@ def transition_options(config):
             _check_platform(key, value)
         if option not in OPTIONS:
             fail(
-                ("'{}' ({}) can't be set by 'multitransition.transition'. Declare it in " +
-                 "MODULE.bazel with 'multitransition_config.flag(setting = ...)' or " +
-                 "'multitransition_config.command_line_option(name = ...)'.").format(key, option),
+                ("'{}' ({}) can't be set by 'multitransition.transition'. Add it in " +
+                 "MODULE.bazel with 'multitransition_config.extend(flags = [...])' or " +
+                 "'multitransition_config.extend(command_line_options = [...])'.").format(key, option),
             )
         options[option] = _option_values(value)
     return options

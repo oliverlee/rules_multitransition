@@ -9,10 +9,10 @@ multitransition_config = use_extension(
     "multitransition_config",
     dev_dependency = True,
 )
-multitransition_config.flag(setting = "@cortex_m//config:semihosting")
-multitransition_config.command_line_option(name = "conlyopt")
-multitransition_config.aspect(
-    aspect = "@rules_clang_tidy//:aspects.bzl%check",
+multitransition_config.extend(
+    aspects = ["@rules_clang_tidy//:aspects.bzl%check"],
+    command_line_options = ["conlyopt"],
+    flags = ["@cortex_m//config:semihosting"],
 )
 ```
 
@@ -29,36 +29,24 @@ load("//private:default_options.bzl", "DEFAULT_OPTIONS")
 
 visibility("public")
 
-_flag = tag_class(
+_extend = tag_class(
     attrs = {
-        "setting": attr.label(
-            mandatory = True,
-            doc = "A Starlark build setting, e.g. a 'bool_flag'.",
+        "aspects": attr.label_list(
+            # Labels, so they're resolved in the declaring module. '%' is valid
+            # in a target name, so '<bzl file>%<name>' parses as a single label.
+            doc = "Aspects 'multitransition.target' may apply, as '<bzl file>%<name>', " +
+                  "e.g. '@rules_clang_tidy//:aspects.bzl%check'.",
+        ),
+        "command_line_options": attr.string_list(
+            doc = "Native options 'multitransition.transition' may set, without " +
+                  "leading dashes, e.g. 'conlyopt'.",
+        ),
+        "flags": attr.label_list(
+            doc = "Starlark build settings 'multitransition.transition' may set, " +
+                  "e.g. a 'bool_flag'.",
         ),
     },
-    doc = "Allows 'multitransition.transition' to set a Starlark build setting.",
-)
-
-_command_line_option = tag_class(
-    attrs = {
-        "name": attr.string(
-            mandatory = True,
-            doc = "A native option name without leading dashes, e.g. 'conlyopt'.",
-        ),
-    },
-    doc = "Allows 'multitransition.transition' to set a native command line option.",
-)
-
-_aspect = tag_class(
-    attrs = {
-        # A label, so it's resolved in the declaring module. '%' is valid in a
-        # target name, so '<bzl file>%<name>' parses as a single label.
-        "aspect": attr.label(
-            mandatory = True,
-            doc = "The aspect as '<bzl file>%<name>', e.g. '@rules_clang_tidy//:aspects.bzl%check'.",
-        ),
-    },
-    doc = "Allows 'multitransition.target' to apply an aspect.",
+    doc = "Extends the options transitions may set and the aspects 'multitransition.target' may apply.",
 )
 
 _OPTIONS_BZL = """\
@@ -140,14 +128,14 @@ def _impl(mctx):
     extra = {}
     aspects = {}
     for mod in mctx.modules:
-        for tag in mod.tags.aspect:
-            # canonical form, valid when loaded from any repo
-            aspects[str(tag.aspect)] = None
-        for tag in mod.tags.flag:
-            # canonical form, valid when loaded from any repo
-            extra[str(tag.setting)] = None
-        for tag in mod.tags.command_line_option:
-            extra["//command_line_option:{}".format(tag.name)] = None
+        for tag in mod.tags.extend:
+            # canonical labels, valid when loaded from any repo
+            for aspect in tag.aspects:
+                aspects[str(aspect)] = None
+            for flag in tag.flags:
+                extra[str(flag)] = None
+            for name in tag.command_line_options:
+                extra["//command_line_option:{}".format(name)] = None
 
     _options_repo(
         name = "multitransition_config",
@@ -165,8 +153,6 @@ def _impl(mctx):
 multitransition_config = module_extension(
     implementation = _impl,
     tag_classes = {
-        "aspect": _aspect,
-        "command_line_option": _command_line_option,
-        "flag": _flag,
+        "extend": _extend,
     },
 )
