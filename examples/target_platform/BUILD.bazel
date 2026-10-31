@@ -25,11 +25,11 @@ multitransition_test(
     transitions = [
         transition_config(
             name = "host",
-            platforms = "@platforms//host",
+            platform = "@platforms//host",
         ),
         transition_config(
             name = "cortex-m3",
-            platforms = "@cortex_m//platform:lm3s6965evb",
+            platform = "@cortex_m//platform:lm3s6965evb",
         ),
     ],
 )
