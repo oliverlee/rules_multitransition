@@ -46,15 +46,16 @@ def _option_value(value):
     """
     Converts one value to a string.
 
-    Relative labels are resolved against the calling package, as the
-    transition would otherwise resolve them against this repo.
+    Labels are resolved against the calling package, as the transition would
+    otherwise resolve them against this repo, where e.g. '@cortex_m' isn't
+    visible.
     """
     if type(value) == "bool":
         return "true" if value else "false"
     if type(value) == "Label":
         return str(value)
     value = str(value)
-    if value.startswith((":", "//")):
+    if value.startswith(("@", ":", "//")):
         return _canonical_label(value)
     return value
 
