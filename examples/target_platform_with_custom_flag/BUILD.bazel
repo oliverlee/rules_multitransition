@@ -4,6 +4,7 @@ load(
     "multitransition_test",
     "transition_config",
 )
+load("@rules_multitransition_test//:compile_flags_test.bzl", "compile_flags_test")
 
 # '@cortex_m//config:semihosting' is declared with the 'multitransition'
 # module extension in MODULE.bazel
@@ -25,3 +26,16 @@ multitransition_test(
         ),
     ],
 )
+
+[
+    compile_flags_test(
+        name = "mcpu_{}_test".format(variant),
+        expect = expect,
+        flag = "-mcpu=cortex-m3",
+        target = ":target_platform_test.{}".format(variant),
+    )
+    for variant, expect in [
+        ("host", "absent"),
+        ("cortex-m3", "present"),
+    ]
+]

@@ -37,11 +37,6 @@ bazel_dep(
     dev_dependency = True,
 )
 bazel_dep(
-    name = "rules_shell",
-    version = "0.6.1",
-    dev_dependency = True,
-)
-bazel_dep(
     name = "toolchains_arm_gnu",
     dev_dependency = True,
 )
@@ -77,14 +72,4 @@ bazel_dep(
 local_path_override(
     module_name = "rules_multitransition_test",
     path = "test",
-)
-
-local_config = use_extension(
-    "@rules_multitransition_test//extension:local_config.bzl",
-    "local_config",
-    dev_dependency = True,
-)
-use_repo(
-    local_config,
-    "local_workspace_directory",
 )

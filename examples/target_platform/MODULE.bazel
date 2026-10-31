@@ -49,3 +49,12 @@ local_path_override(
     module_name = "rules_multitransition",
     path = "../../",
 )
+
+bazel_dep(
+    name = "rules_multitransition_test",
+    dev_dependency = True,
+)
+local_path_override(
+    module_name = "rules_multitransition_test",
+    path = "../../test",
+)

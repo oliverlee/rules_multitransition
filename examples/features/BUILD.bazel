@@ -1,11 +1,10 @@
-load("@local_workspace_directory//:defs.bzl", "BAZEL_WORKSPACE_ROOT")
 load("@rules_cc//cc:defs.bzl", "cc_test")
 load(
     "@rules_multitransition//:defs.bzl",
     "multitransition_test",
     "transition_config",
 )
-load("@rules_shell//shell:sh_test.bzl", "sh_test")
+load("@rules_multitransition_test//:compile_flags_test.bzl", "compile_flags_test")
 
 # 'treat_warnings_as_errors' adds '-Werror' to compile actions with the
 # default rules_cc toolchain.
@@ -32,19 +31,11 @@ multitransition_test(
 )
 
 [
-    sh_test(
+    compile_flags_test(
         name = "werror_{}_test".format(variant),
-        srcs = ["@rules_multitransition_test//:check_flag.bash"],
-        args = [
-            BAZEL_WORKSPACE_ROOT,
-            "//{}:features_test.{}".format(package_name(), variant),
-            "-Werror",
-            expect,
-        ],
-        env_inherit = [
-            "HOME",
-        ],
-        tags = ["local"],
+        expect = expect,
+        flag = "-Werror",
+        target = ":features_test.{}".format(variant),
     )
     for variant, expect in [
         ("enabled", "present"),
