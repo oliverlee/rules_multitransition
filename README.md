@@ -91,18 +91,27 @@ own tests. Omit it if your module provides a macro around
 `multitransition.test` that other modules call with these options, so the
 declarations apply when your module is a dependency.
 
-Native options are passed as keyword arguments and build settings in
-`flags`:
+Set a native option by passing its name as a keyword argument to
+`multitransition.transition`, e.g. `features = [...]`, or in `flags` with the
+key `//command_line_option:<name>`. Set a Starlark build setting in `flags`
+with its label as the key:
 
 ```bzl
 multitransition.transition(
     name = "cortex-m3",
     platform = "@cortex_m//platform:lm3s6965evb",
+    features = ["treat_warnings_as_errors"],
     flags = {
+        "//command_line_option:copt": ["-DNDEBUG"],
         "@cortex_m//config:semihosting": True,
     },
 )
 ```
+
+The target platform is the exception: set it with `platform` and a single
+label, which replaces `--platforms`. Setting `platforms` directly fails, as
+a transition supports only one target platform
+([bazelbuild/bazel#10154](https://github.com/bazelbuild/bazel/issues/10154)).
 
 Values are converted to the type of the option. List options are appended
 to.
