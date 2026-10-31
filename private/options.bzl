@@ -12,6 +12,7 @@ DEFAULT_OPTIONS = [
         "copt",
         "cxxopt",
         "extra_toolchains",
+        "features",
         "linkopt",
         "platforms",
     ]

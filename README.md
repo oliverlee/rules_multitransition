@@ -75,7 +75,7 @@ def cc_multi_test(
 
 `transition_config` can set these native options as keyword arguments
 without any setup: `compilation_mode`, `copt`, `cxxopt`, `extra_toolchains`,
-`linkopt`, `platform` (a single label, sets `--platforms`).
+`features`, `linkopt`, `platform` (a single label, sets `--platforms`).
 
 Other native options and Starlark build settings must be declared in
 `MODULE.bazel`. Declarations from all modules in the dependency graph are
@@ -112,6 +112,11 @@ transition_config(
 
 Values are converted to the type of the option. List options are appended
 to.
+
+For `features`, prefix a feature with `-` to disable it. A negative feature
+overrides a positive one, so a variant can disable a feature enabled on the
+command line, but can't enable a feature disabled on the command line. See
+`//examples/features`.
 
 ### Running
 

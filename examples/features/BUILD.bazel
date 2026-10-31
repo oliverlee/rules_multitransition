@@ -1,0 +1,53 @@
+load("@local_workspace_directory//:defs.bzl", "BAZEL_WORKSPACE_ROOT")
+load("@rules_cc//cc:defs.bzl", "cc_test")
+load(
+    "@rules_multitransition//:defs.bzl",
+    "multitransition_test",
+    "transition_config",
+)
+load("@rules_shell//shell:sh_test.bzl", "sh_test")
+
+# 'treat_warnings_as_errors' adds '-Werror' to compile actions with the
+# default rules_cc toolchain.
+multitransition_test(
+    cc_test,
+    name = "features_test",
+    srcs = ["dummy.cpp"],
+    transitions = [
+        transition_config(
+            name = "enabled",
+            features = ["treat_warnings_as_errors"],
+        ),
+        # A negative feature overrides a positive one, so the disable also
+        # applies when the feature is enabled earlier, e.g. on the command
+        # line.
+        transition_config(
+            name = "disabled",
+            features = [
+                "treat_warnings_as_errors",
+                "-treat_warnings_as_errors",
+            ],
+        ),
+    ],
+)
+
+[
+    sh_test(
+        name = "werror_{}_test".format(variant),
+        srcs = ["check_flag.bash"],
+        args = [
+            BAZEL_WORKSPACE_ROOT,
+            "//{}:features_test.{}".format(package_name(), variant),
+            "-Werror",
+            expect,
+        ],
+        env_inherit = [
+            "HOME",
+        ],
+        tags = ["local"],
+    )
+    for variant, expect in [
+        ("enabled", "present"),
+        ("disabled", "absent"),
+    ]
+]
