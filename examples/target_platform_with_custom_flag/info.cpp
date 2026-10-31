@@ -11,6 +11,6 @@ auto main() -> int {
 #ifdef __ARM_ARCH
   printf("__ARM_ARCH = %d\n", __ARM_ARCH);
 #endif
-  printf("sizeof(std::size_t)= %u\n", sizeof(std::size_t));
+  printf("sizeof(std::size_t)= %u\n", static_cast<unsigned>(sizeof(std::size_t)));
   return 0;
 }
