@@ -74,4 +74,6 @@ multitransition_config = use_extension(
     "multitransition_config",
     dev_dependency = True,
 )
-multitransition_config.flag(setting = "@cortex_m//config:semihosting")
+multitransition_config.extend(
+    flags = ["@cortex_m//config:semihosting"],
+)

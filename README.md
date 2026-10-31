@@ -80,8 +80,10 @@ multitransition_config = use_extension(
     "multitransition_config",
     dev_dependency = True,
 )
-multitransition_config.flag(setting = "@cortex_m//config:semihosting")
-multitransition_config.command_line_option(name = "conlyopt")
+multitransition_config.extend(
+    command_line_options = ["conlyopt"],
+    flags = ["@cortex_m//config:semihosting"],
+)
 ```
 
 Use `dev_dependency = True` when the declarations are only needed for your
@@ -120,8 +122,8 @@ target is then the aspect's `output_group`. Declare the aspect in
 
 ```bzl
 # MODULE.bazel
-multitransition_config.aspect(
-    aspect = "@rules_clang_tidy//:aspects.bzl%check",
+multitransition_config.extend(
+    aspects = ["@rules_clang_tidy//:aspects.bzl%check"],
 )
 ```
 

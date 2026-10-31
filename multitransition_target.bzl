@@ -28,8 +28,8 @@ def _rule_and_attrs(config):
     aspect = _canonical_aspect(config.aspect.aspect)
     if aspect not in RULES:
         fail(
-            ("'{}' ({}) can't be applied by 'multitransition.target'. Declare it " +
-             "in MODULE.bazel with 'multitransition_config.aspect(aspect = \"{}\")'.").format(
+            ("'{}' ({}) can't be applied by 'multitransition.target'. Add it " +
+             "in MODULE.bazel with 'multitransition_config.extend(aspects = [\"{}\"])'.").format(
                 config.aspect.aspect,
                 aspect,
                 config.aspect.aspect,
