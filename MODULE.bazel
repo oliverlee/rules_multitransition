@@ -16,16 +16,16 @@ bazel_dep(
     version = "1.0.0",
 )
 
-multitransition = use_extension("//:extensions.bzl", "multitransition")
-use_repo(multitransition, "multitransition_options")
+multitransition_config = use_extension("//:extensions.bzl", "multitransition_config")
+use_repo(multitransition_config, "multitransition_config")
 
 # options set by //examples
-multitransition_dev = use_extension(
+multitransition_config_dev = use_extension(
     "//:extensions.bzl",
-    "multitransition",
+    "multitransition_config",
     dev_dependency = True,
 )
-multitransition_dev.flag(setting = "@cortex_m//config:semihosting")
+multitransition_config_dev.flag(setting = "@cortex_m//config:semihosting")
 
 bazel_dep(
     name = "buildifier_prebuilt",

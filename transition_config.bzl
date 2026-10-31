@@ -1,5 +1,5 @@
 """
-Implementation of 'transition_config'.
+Implementation of 'multitransition.transition'.
 """
 
 visibility("private")
@@ -16,7 +16,7 @@ def transition_config(*, name = None, flags = {}, **kwargs):
 
     Args:
       name: string
-        Name of the configuration. 'multitransition_test' uses it as the
+        Name of the configuration. 'multitransition.test' uses it as the
         suffix of the variant target, '<test>.<name>', and defaults to the
         index.
       flags: dict
@@ -27,11 +27,11 @@ def transition_config(*, name = None, flags = {}, **kwargs):
         target platform is set with platform = <label> (a single label).
 
     Returns:
-      A 'transition_config' struct for 'multitransition_test'.
+      A 'multitransition.transition' struct for 'multitransition.test'.
 
     Values may be a string, bool, int, Label, or a list of these. List
     options are appended to. Every option must be a default option or
-    declared with the 'multitransition' module extension.
+    declared with the 'multitransition_config' module extension.
     """
     for key in kwargs:
         if key in flags:

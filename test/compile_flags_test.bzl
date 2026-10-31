@@ -23,7 +23,7 @@ def _compile_actions_aspect_impl(target, ctx):
         if action.mnemonic == "CppCompile" and action.argv
     ]
 
-    # 'src' of a 'multitransition_test' variant, built in the transitioned
+    # 'src' of a 'multitransition.test' variant, built in the transitioned
     # configuration
     src = getattr(ctx.rule.attr, "src", None)
     if src and _CompileActionsInfo in src:

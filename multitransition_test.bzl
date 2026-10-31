@@ -1,5 +1,5 @@
 """
-Implementation of 'multitransition_test' macro.
+Implementation of 'multitransition.test' macro.
 """
 
 load("//:transition_config.bzl", "is_transition_config")
@@ -27,7 +27,7 @@ def _canonical_label(value):
 
 def _option_key(key):
     """
-    Converts a 'transition_config' key to a transition option.
+    Converts a 'multitransition.transition' key to a transition option.
 
     Returns '//command_line_option:<name>' or a canonical label.
     """
@@ -72,9 +72,9 @@ def _flags(config):
             fail("Use 'platform' to set the target platform, not '{}'.".format(key))
         if option not in OPTIONS:
             fail(
-                ("'{}' ({}) can't be set by 'transition_config'. Declare it in " +
-                 "MODULE.bazel with 'multitransition.flag(setting = ...)' or " +
-                 "'multitransition.command_line_option(name = ...)'.").format(key, option),
+                ("'{}' ({}) can't be set by 'multitransition.transition'. Declare it in " +
+                 "MODULE.bazel with 'multitransition_config.flag(setting = ...)' or " +
+                 "'multitransition_config.command_line_option(name = ...)'.").format(key, option),
             )
         if option == _PLATFORMS_OPTION and type(value) in ("list", "tuple"):
             fail("'platform' takes a single label, got {}".format(value))
@@ -100,7 +100,7 @@ def multitransition_test(
       name: string
         Name for the underlying test target. Additional test variants use this
         as the base name.
-      transitions: list of 'transition_config'
+      transitions: list of 'multitransition.transition'
         Configurations for each variant test target.
       tags: string_list
         Tags to apply to all test targets.
@@ -118,7 +118,7 @@ def multitransition_test(
     target.
     """
     if target_compatible_with:
-        fail("'target_compatible_with' is not settable with 'multitransition_test'")
+        fail("'target_compatible_with' is not settable with 'multitransition.test'")
     tags_with_manual = _append_if_missing(tags, "manual")
 
     test_rule(
@@ -152,7 +152,7 @@ def multitransition_test(
     tests = []
     for i, config in enumerate(transitions):
         if not is_transition_config(config):
-            fail("Invalid transition config: '{}'. Use 'transition_config'.".format(config))
+            fail("Invalid transition config: '{}'. Use 'multitransition.transition'.".format(config))
 
         transitioned_test_name = name + "." + (config.name or str(i))
         tests.append(transitioned_test_name)
