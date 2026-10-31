@@ -49,3 +49,10 @@ local_path_override(
     module_name = "rules_multitransition",
     path = "../../",
 )
+
+multitransition = use_extension(
+    "@rules_multitransition//:extensions.bzl",
+    "multitransition",
+    dev_dependency = True,
+)
+multitransition.flag(setting = "@cortex_m//config:semihosting")

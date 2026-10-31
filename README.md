@@ -71,6 +71,50 @@ def cc_multi_test(
 )
 ```
 
+### Options
+
+`transition_config` can set these native options as keyword arguments
+without any setup: `compilation_mode`, `copt`, `cxxopt`, `extra_toolchains`,
+`linkopt`, `platform` (a single label, sets `--platforms`).
+
+Other native options and Starlark build settings must be declared in
+`MODULE.bazel`. Declarations from all modules in the dependency graph are
+combined:
+
+```bzl
+# MODULE.bazel
+multitransition = use_extension(
+    "@rules_multitransition//:extensions.bzl",
+    "multitransition",
+    dev_dependency = True,
+)
+multitransition.flag(setting = "@cortex_m//config:semihosting")
+multitransition.command_line_option(name = "conlyopt")
+```
+
+Use `dev_dependency = True` when the declarations are only needed for your
+own tests. Omit it if your module provides a macro around
+`multitransition_test` that other modules call with these options, so the
+declarations apply when your module is a dependency.
+
+Native options are passed as keyword arguments and build settings in
+`flags`:
+
+```bzl
+transition_config(
+    name = "cortex-m3",
+    platform = "@cortex_m//platform:lm3s6965evb",
+    flags = {
+        "@cortex_m//config:semihosting": True,
+    },
+)
+```
+
+Values are converted to the type of the option. List options are appended
+to.
+
+### Running
+
 Run all the `multitransition_test` targets with Bazel:
 
 ```sh

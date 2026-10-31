@@ -2,9 +2,11 @@ load("@rules_cc//cc:defs.bzl", "cc_test")
 load(
     "@rules_multitransition//:defs.bzl",
     "multitransition_test",
+    "transition_config",
 )
-load(":transition_config.bzl", "transition_config")
 
+# '@cortex_m//config:semihosting' is declared with the 'multitransition'
+# module extension in MODULE.bazel
 multitransition_test(
     cc_test,
     name = "target_platform_test",
@@ -12,12 +14,14 @@ multitransition_test(
     transitions = [
         transition_config(
             name = "host",
-            platforms = "@platforms//host",
+            platform = "@platforms//host",
         ),
         transition_config(
             name = "cortex-m3",
-            platforms = "@cortex_m//platform:lm3s6965evb",
-            semihosting = True,
+            flags = {
+                "@cortex_m//config:semihosting": True,
+            },
+            platform = "@cortex_m//platform:lm3s6965evb",
         ),
     ],
 )
