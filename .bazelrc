@@ -19,4 +19,8 @@ build:remote-cache --legacy_important_outputs=false
 
 test --test_output=errors
 
+# Bazel 9 has no exec platform for bare-metal test targets
+# https://github.com/oliverlee/cortex_m/issues/75
+test --use_target_platform_for_tests
+
 try-import %workspace%/user.bazelrc
