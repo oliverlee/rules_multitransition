@@ -2,6 +2,8 @@ common --experimental_repository_cache_hardlinks
 common --repo_env=BAZEL_USE_CPP_ONLY_TOOLCHAIN=1
 common --repo_env=BAZEL_USE_XCODE_TOOLCHAIN=0
 
+common --lockfile_mode=error
+
 build:remote-cache --bes_results_url=https://oliverlee.buildbuddy.io/invocation/
 build:remote-cache --bes_backend=grpcs://oliverlee.buildbuddy.io
 build:remote-cache --bes_upload_mode=fully_async
