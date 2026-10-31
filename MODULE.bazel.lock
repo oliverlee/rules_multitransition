@@ -146,22 +146,6 @@
   },
   "selectedYankedVersions": {},
   "moduleExtensions": {
-    "//rules:local_config.bzl%local_config": {
-      "general": {
-        "bzlTransitiveDigest": "sqkbW831HXcEkAFz2C1ArpbLL3HPvCcQovsiDDOFo9Q=",
-        "usagesDigest": "ufHFSetN8ScTr3AhHhTAczWBauAb3A7oSBP8sWbInbc=",
-        "recordedFileInputs": {},
-        "recordedDirentsInputs": {},
-        "envVariables": {},
-        "generatedRepoSpecs": {
-          "local_workspace_directory": {
-            "repoRuleId": "@@//rules:local_config.bzl%_local_workspace_directory",
-            "attributes": {}
-          }
-        },
-        "recordedRepoMappingEntries": []
-      }
-    },
     "@@cortex_m+//extensions:flake_package_deps.bzl%flake_package_deps": {
       "general": {
         "bzlTransitiveDigest": "I8cdfXDmWFgZF9BQSfW0QvP1Ifkitpseuz30PgypUVI=",
@@ -429,6 +413,22 @@
             "bazel_tools"
           ]
         ]
+      }
+    },
+    "@@rules_multitransition_test+//extension:local_config.bzl%local_config": {
+      "general": {
+        "bzlTransitiveDigest": "P0uLJ8iAPTHMVKjCtpMG3Mel4GWnl4MCWA8mf/wAJXw=",
+        "usagesDigest": "MgfI4rpqi1H+tCfsl3WrMe+tmW3CRrbUzD+OzJYUdqE=",
+        "recordedFileInputs": {},
+        "recordedDirentsInputs": {},
+        "envVariables": {},
+        "generatedRepoSpecs": {
+          "local_workspace_directory": {
+            "repoRuleId": "@@rules_multitransition_test+//extension:local_config.bzl%_local_workspace_directory",
+            "attributes": {}
+          }
+        },
+        "recordedRepoMappingEntries": []
       }
     },
     "@@rules_nixpkgs_core+//extensions:repository.bzl%nix_repo": {

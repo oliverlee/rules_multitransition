@@ -26,7 +26,7 @@ multitransition_test(
 [
     sh_test(
         name = "uses_{}_compile_flags_test".format(flavor),
-        srcs = ["check_flag.bash"],
+        srcs = ["@rules_multitransition_test//:check_flag.bash"],
         args = [
             BAZEL_WORKSPACE_ROOT,
             "//{}:compilation_mode_test.{}".format(

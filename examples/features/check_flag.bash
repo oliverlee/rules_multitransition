@@ -1,1 +1,0 @@
-../compilation_mode/check_flag.bash

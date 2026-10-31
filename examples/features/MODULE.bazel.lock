@@ -141,22 +141,6 @@
   },
   "selectedYankedVersions": {},
   "moduleExtensions": {
-    "//:local_config.bzl%local_config": {
-      "general": {
-        "bzlTransitiveDigest": "sqkbW831HXcEkAFz2C1ArpbLL3HPvCcQovsiDDOFo9Q=",
-        "usagesDigest": "oMzoCZVyhJvYAQgcM2fPhd1Oz6xsXpDTKe9U0X85eoY=",
-        "recordedFileInputs": {},
-        "recordedDirentsInputs": {},
-        "envVariables": {},
-        "generatedRepoSpecs": {
-          "local_workspace_directory": {
-            "repoRuleId": "@@//:local_config.bzl%_local_workspace_directory",
-            "attributes": {}
-          }
-        },
-        "recordedRepoMappingEntries": []
-      }
-    },
     "@@pybind11_bazel+//:python_configure.bzl%extension": {
       "general": {
         "bzlTransitiveDigest": "4rSUGWibZDYLhHR+8eMwTNwAwdIv+xjVrtQ+gHtWHq4=",
@@ -336,6 +320,22 @@
             "bazel_tools"
           ]
         ]
+      }
+    },
+    "@@rules_multitransition_test+//extension:local_config.bzl%local_config": {
+      "general": {
+        "bzlTransitiveDigest": "P0uLJ8iAPTHMVKjCtpMG3Mel4GWnl4MCWA8mf/wAJXw=",
+        "usagesDigest": "TOBD2gFHonvieH1I4M9JDaeKulp50x8duH5vQIbA6GE=",
+        "recordedFileInputs": {},
+        "recordedDirentsInputs": {},
+        "envVariables": {},
+        "generatedRepoSpecs": {
+          "local_workspace_directory": {
+            "repoRuleId": "@@rules_multitransition_test+//extension:local_config.bzl%_local_workspace_directory",
+            "attributes": {}
+          }
+        },
+        "recordedRepoMappingEntries": []
       }
     },
     "@@rules_python+//python/private/pypi:pip.bzl%pip_internal": {

@@ -1,0 +1,4 @@
+# Test helpers for rules_multitransition and its examples. Only used through
+# 'local_path_override' with 'dev_dependency = True', so modules depending on
+# rules_multitransition can't depend on this.
+module(name = "rules_multitransition_test")

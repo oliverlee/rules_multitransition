@@ -16,9 +16,17 @@ local_path_override(
     module_name = "rules_multitransition",
     path = "../../",
 )
+bazel_dep(
+    name = "rules_multitransition_test",
+    dev_dependency = True,
+)
+local_path_override(
+    module_name = "rules_multitransition_test",
+    path = "../../test",
+)
 
 local_config = use_extension(
-    "//:local_config.bzl",
+    "@rules_multitransition_test//extension:local_config.bzl",
     "local_config",
     dev_dependency = True,
 )
