@@ -110,6 +110,44 @@ overrides a positive one, so a variant can disable a feature enabled on the
 command line, but can't enable a feature disabled on the command line. See
 `//examples/features`.
 
+### Aspects
+
+`multitransition.target` builds a target in each configuration. Each
+`<name>.<config>` target forwards the providers of `src`. A configuration may
+also apply an aspect with `multitransition.aspect`; the default output of that
+target is then the aspect's `output_group`. Declare the aspect in
+`MODULE.bazel`:
+
+```bzl
+# MODULE.bazel
+multitransition_config.aspect(
+    aspect = "@rules_clang_tidy//:aspects.bzl%check",
+)
+```
+
+```bzl
+# BUILD.bazel
+multitransition.target(
+    name = "lib_transitioned",
+    src = ":lib",
+    transitions = [
+        multitransition.transition(
+            name = "clang-tidy-report",
+            aspect = multitransition.aspect(
+                aspect = "@rules_clang_tidy//:aspects.bzl%check",
+                output_group = "report",
+            ),
+        ),
+    ],
+)
+```
+
+```sh
+$ bazel build //:lib_transitioned.clang-tidy-report
+```
+
+See `//examples/aspect`.
+
 ### Running
 
 Run all the `multitransition.test` targets with Bazel:

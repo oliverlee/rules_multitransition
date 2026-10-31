@@ -1,8 +1,9 @@
 """
-Transitioned target, binary, and test rules.
+The transition and the transitioned target, binary, and test rules.
 
-The transition can set the options in `OPTIONS`, which the `multitransition_config`
-module extension generates from the declarations in the module graph.
+The transition can set the options in `OPTIONS`, which the
+`multitransition_config` module extension generates from the declarations in
+the module graph.
 """
 
 load("@multitransition_config//:defs.bzl", _OPTIONS = "OPTIONS")
@@ -33,9 +34,8 @@ def _convert(option, current, values):
 
     if kind == "list":
         if option == _PLATFORMS:
+            # replaced with the single label checked by 'transition_options'
             # https://github.com/bazelbuild/bazel/issues/10154
-            if len(values) != 1:
-                fail("'{}' takes exactly one value, got {}".format(option, values))
             return values
         return current + values
 
@@ -62,7 +62,7 @@ def _convert(option, current, values):
 def _transition_impl(settings, attr):
     return settings | {
         option: _convert(option, settings[option], values)
-        for option, values in attr.flags.items()
+        for option, values in attr.options.items()
     }
 
 _FORWARDED_PROVIDERS = [
@@ -127,59 +127,52 @@ def _forward_executable_impl(ctx):
         ),
     ] + _forwarded_providers(target)
 
-def _make_rules(options):
-    """
-    Creates target, binary, and test rules.
+TRANSITION = transition(
+    implementation = _transition_impl,
+    inputs = OPTIONS,
+    outputs = OPTIONS,
+)
 
-    Each rule builds `src` with `flags` applied.
+def attrs(aspects = []):
+    """
+    Attributes of a transitioned rule.
 
     Args:
-      options: list of string
-        Every option the transition may set: `//command_line_option:<name>`
-        for native options, or canonical labels for build settings.
+      aspects: list of aspect
+        Aspects applied to `src`.
 
-    Returns a tuple of (target rule, binary rule, test rule).
+    Returns:
+      A dict with the `options` and `src` attributes.
     """
-    cfg = transition(
-        implementation = _transition_impl,
-        inputs = options,
-        outputs = options,
-    )
-    attrs = {
-        "flags": attr.string_list_dict(
+    return {
+        "options": attr.string_list_dict(
             doc = "Option to values. Only listed options are changed.",
         ),
         "src": attr.label(
             mandatory = True,
+            aspects = aspects,
             doc = "The target to build in the transitioned configuration.",
         ),
     }
 
-    target = rule(
-        implementation = _forward_target_impl,
-        cfg = cfg,
-        attrs = attrs,
-    )
-    binary = rule(
-        implementation = _forward_executable_impl,
-        cfg = cfg,
-        attrs = attrs,
-        executable = True,
-        provides = [DefaultInfo, RunEnvironmentInfo],
-    )
+transitioned_target = rule(
+    implementation = _forward_target_impl,
+    cfg = TRANSITION,
+    attrs = attrs(),
+)
 
-    test = rule(
-        implementation = _forward_executable_impl,
-        cfg = cfg,
-        attrs = attrs,
-        test = True,
-        provides = [DefaultInfo, RunEnvironmentInfo],
-    )
+transitioned_binary = rule(
+    implementation = _forward_executable_impl,
+    cfg = TRANSITION,
+    attrs = attrs(),
+    executable = True,
+    provides = [DefaultInfo, RunEnvironmentInfo],
+)
 
-    return (target, binary, test)
-
-(
-    transitioned_target,
-    transitioned_binary,
-    transitioned_test,
-) = _make_rules(OPTIONS)
+transitioned_test = rule(
+    implementation = _forward_executable_impl,
+    cfg = TRANSITION,
+    attrs = attrs(),
+    test = True,
+    provides = [DefaultInfo, RunEnvironmentInfo],
+)
