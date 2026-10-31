@@ -34,7 +34,7 @@ multitransition_test(
 [
     sh_test(
         name = "werror_{}_test".format(variant),
-        srcs = ["check_flag.bash"],
+        srcs = ["@rules_multitransition_test//:check_flag.bash"],
         args = [
             BAZEL_WORKSPACE_ROOT,
             "//{}:features_test.{}".format(package_name(), variant),

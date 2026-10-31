@@ -2,7 +2,7 @@
 extension for obtaining the local workspace directory
 """
 
-visibility("//...")
+visibility("public")
 
 def _local_workspace_directory_impl(rctx):
     rctx.file(
