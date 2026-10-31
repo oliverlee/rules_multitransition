@@ -2,3 +2,8 @@
 # 'local_path_override' with 'dev_dependency = True', so modules depending on
 # rules_multitransition can't depend on this.
 module(name = "rules_multitransition_test")
+
+bazel_dep(
+    name = "bazel_skylib",
+    version = "1.8.2",
+)

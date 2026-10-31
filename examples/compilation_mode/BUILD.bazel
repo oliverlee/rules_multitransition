@@ -1,11 +1,10 @@
-load("@local_workspace_directory//:defs.bzl", "BAZEL_WORKSPACE_ROOT")
 load("@rules_cc//cc:defs.bzl", "cc_test")
 load(
     "@rules_multitransition//:defs.bzl",
     "multitransition_test",
     "transition_config",
 )
-load("@rules_shell//shell:sh_test.bzl", "sh_test")
+load("@rules_multitransition_test//:compile_flags_test.bzl", "compile_flags_test")
 
 multitransition_test(
     cc_test,
@@ -24,22 +23,11 @@ multitransition_test(
 )
 
 [
-    sh_test(
+    compile_flags_test(
         name = "uses_{}_compile_flags_test".format(flavor),
-        srcs = ["@rules_multitransition_test//:check_flag.bash"],
-        args = [
-            BAZEL_WORKSPACE_ROOT,
-            "//{}:compilation_mode_test.{}".format(
-                package_name(),
-                flavor,
-            ),
-            flag,
-            "present",
-        ],
-        env_inherit = [
-            "HOME",
-        ],
-        tags = ["local"],
+        expect = "present",
+        flag = flag,
+        target = ":compilation_mode_test.{}".format(flavor),
     )
     for flavor, flag in [
         ("dbg", "-g"),
