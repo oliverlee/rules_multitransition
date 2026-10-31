@@ -1,4 +1,4 @@
-load("@rules_cc//cc:defs.bzl", "cc_test")
+load("@rules_cc//cc:defs.bzl", "cc_library", "cc_test")
 load("@rules_multitransition//:defs.bzl", "multitransition")
 load("@rules_multitransition_test//:compile_flags_test.bzl", "compile_flags_test")
 
@@ -30,3 +30,28 @@ multitransition.test(
         ("opt", "-O2"),
     ]
 ]
+
+cc_library(
+    name = "dummy",
+    srcs = ["dummy.cpp"],
+)
+
+# Without an aspect, 'multitransition.target' forwards the providers of 'src',
+# built in the transition.
+multitransition.target(
+    name = "dummy_transitioned",
+    src = ":dummy",
+    transitions = [
+        multitransition.transition(
+            name = "opt",
+            compilation_mode = "opt",
+        ),
+    ],
+)
+
+compile_flags_test(
+    name = "target_uses_opt_compile_flags_test",
+    expect = "present",
+    flag = "-O2",
+    target = ":dummy_transitioned.opt",
+)

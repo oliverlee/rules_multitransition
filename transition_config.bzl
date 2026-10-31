@@ -2,15 +2,19 @@
 Implementation of 'multitransition.transition'.
 """
 
+load("//:aspect_config.bzl", "is_aspect_config")
+
 visibility("private")
+
+_TYPE = "_RULES_MULTITRANSITION_TRANSITION_CONFIG_"
 
 def is_transition_config(config):
     """
     Check if the object is a transition config.
     """
-    return getattr(config, "type", None) == "transition_config"
+    return getattr(config, "type", None) == _TYPE
 
-def transition_config(*, name = None, flags = {}, **kwargs):
+def transition_config(*, name = None, flags = {}, aspect = None, **kwargs):
     """
     Describes a configuration to transition a target to.
 
@@ -22,12 +26,16 @@ def transition_config(*, name = None, flags = {}, **kwargs):
       flags: dict
         Build setting label or option to value. Use this for Starlark build
         settings, e.g. {"@cortex_m//config:semihosting": True}.
+      aspect: 'multitransition.aspect'
+        Optional, only for 'multitransition.target'. The aspect to apply and
+        its output group to use as the default output.
       **kwargs:
         Native option name to value, e.g. compilation_mode = "dbg". The
         target platform is set with platform = <label> (a single label).
 
     Returns:
-      A 'multitransition.transition' struct for 'multitransition.test'.
+      A 'multitransition.transition' struct for 'multitransition.test' or
+      'multitransition.target'.
 
     Values may be a string, bool, int, Label, or a list of these. List
     options are appended to. Every option must be a default option or
@@ -37,8 +45,12 @@ def transition_config(*, name = None, flags = {}, **kwargs):
         if key in flags:
             fail("'{}' is set both as a keyword argument and in 'flags'".format(key))
 
+    if aspect != None and not is_aspect_config(aspect):
+        fail("Invalid aspect config: '{}'. Use 'multitransition.aspect'.".format(aspect))
+
     return struct(
-        type = "transition_config",
+        type = _TYPE,
         name = name,
         flags = flags | kwargs,
+        aspect = aspect,
     )

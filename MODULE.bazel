@@ -26,6 +26,9 @@ multitransition_config_dev = use_extension(
     dev_dependency = True,
 )
 multitransition_config_dev.flag(setting = "@cortex_m//config:semihosting")
+multitransition_config_dev.aspect(
+    aspect = "@rules_multitransition_test//:transitive_source_files.bzl%transitive_source_files",
+)
 
 bazel_dep(
     name = "buildifier_prebuilt",
