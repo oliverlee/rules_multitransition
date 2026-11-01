@@ -1,6 +1,6 @@
 load("@bazel_skylib//rules:native_binary.bzl", "native_test")
 load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_test")
-load("@rules_multitransition//:defs.bzl", "multitransition")
+load("@rules_multitransition//:multitransition.bzl", "multitransition")
 
 OPT = multitransition.transition(
     name = "opt",

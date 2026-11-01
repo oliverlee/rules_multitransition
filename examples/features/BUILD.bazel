@@ -1,5 +1,5 @@
 load("@rules_cc//cc:defs.bzl", "cc_test")
-load("@rules_multitransition//:defs.bzl", "multitransition")
+load("@rules_multitransition//:multitransition.bzl", "multitransition")
 load("//test:compile_flags_test.bzl", "compile_flags_test")
 
 # 'treat_warnings_as_errors' adds '-Werror' to compile actions with the

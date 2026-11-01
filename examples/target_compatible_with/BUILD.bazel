@@ -1,5 +1,5 @@
 load("@rules_cc//cc:defs.bzl", "cc_test")
-load("@rules_multitransition//:defs.bzl", "multitransition")
+load("@rules_multitransition//:multitransition.bzl", "multitransition")
 
 # only 'cortex_m_test.cortex-m3' is compatible: the host targets don't satisfy
 # '@platforms//os:none' and are skipped

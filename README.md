@@ -8,7 +8,7 @@ platforms. Each configuration defines a `<name>.<config>` target:
 
 ```bzl
 load("@rules_cc//cc:cc_test.bzl", "cc_test")
-load("@rules_multitransition//:defs.bzl", "multitransition")
+load("@rules_multitransition//:multitransition.bzl", "multitransition")
 
 multitransition.test(
     cc_test,
@@ -233,7 +233,7 @@ macro:
 ```bzl
 # //:cc_multi_test.bzl
 load("@rules_cc//cc:cc_test.bzl", "cc_test")
-load("@rules_multitransition//:defs.bzl", "multitransition")
+load("@rules_multitransition//:multitransition.bzl", "multitransition")
 
 TRANSITIONS = [
     multitransition.transition(...),
@@ -293,7 +293,7 @@ $ bazel build --@rules_multitransition//config:multitransition_binary=False //..
 
 ## Reference
 
-- [`defs.bzl`](docs/defs.md)
+- [`multitransition.bzl`](docs/multitransition.md)
   - `multitransition.test`
   - `multitransition.binary`
   - `multitransition.target`

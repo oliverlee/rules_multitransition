@@ -1,6 +1,6 @@
 load("@bazel_skylib//rules:common_settings.bzl", "string_flag")
 load("@bazel_skylib//rules:diff_test.bzl", "diff_test")
-load("@rules_multitransition//:defs.bzl", "multitransition")
+load("@rules_multitransition//:multitransition.bzl", "multitransition")
 load("@rules_shell//shell:sh_binary.bzl", "sh_binary")
 
 COLORS = [
