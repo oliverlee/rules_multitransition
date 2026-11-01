@@ -1,6 +1,7 @@
 module(
     name = "rules_multitransition",
     version = "0.0.0",
+    bazel_compatibility = [">=7.1.0"],
 )
 
 bazel_dep(
