@@ -17,16 +17,16 @@ def aspect_config(*, aspect, output_group):
     Describes an aspect to apply and the output group to use from it.
 
     Args:
-      aspect: string
-        The aspect as '<bzl file>%<name>', e.g.
-        '@rules_clang_tidy//:aspects.bzl%check'. It must be added in MODULE.bazel
-        with 'multitransition_config.extend(aspects = [...])'.
-      output_group: string
-        The output group of 'aspect' to use as the default output, e.g.
-        'report'.
+      aspect: **string**
+          The aspect as `<bzl file>%<name>`, e.g.
+          `@rules_clang_tidy//:aspects.bzl%check`. It must be added in
+          `MODULE.bazel` with `multitransition_config.extend(aspects = [...])`.
+      output_group: **string**
+          The output group of `aspect` to use as the default output, e.g.
+          `report`.
 
     Returns:
-      An aspect config struct for 'multitransition.transition'.
+      An aspect config for `multitransition.transition`.
     """
     return struct(
         type = _TYPE,

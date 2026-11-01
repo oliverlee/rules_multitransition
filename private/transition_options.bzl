@@ -71,8 +71,8 @@ def transition_options(config):
     Converts a 'multitransition.transition' to a transitioned rule's 'options'.
 
     Args:
-      config: 'multitransition.transition'
-        The configuration to convert.
+      config: **`multitransition.transition`**
+          The configuration to convert.
 
     Returns:
       A dict of transition option to a list of string values.

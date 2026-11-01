@@ -1,6 +1,6 @@
 """
 Module extension that declares which options transitions may set and which
-aspects 'multitransition.target' may apply.
+aspects `multitransition.target` may apply.
 
 ```bzl
 # MODULE.bazel
@@ -34,20 +34,39 @@ _extend = tag_class(
         "aspects": attr.label_list(
             # Labels, so they're resolved in the declaring module. '%' is valid
             # in a target name, so '<bzl file>%<name>' parses as a single label.
-            doc = "Aspects 'multitransition.target' may apply, as '<bzl file>%<name>', " +
-                  "e.g. '@rules_clang_tidy//:aspects.bzl%check'.",
+            doc = "Aspects `multitransition.target` may apply, as `<bzl file>%<name>`, " +
+                  "e.g. `@rules_clang_tidy//:aspects.bzl%check`.",
         ),
         "command_line_options": attr.string_list(
-            doc = "Native options 'multitransition.transition' may set, without " +
-                  "leading dashes, e.g. 'conlyopt'.",
+            doc = "Native options `multitransition.transition` may set, without " +
+                  "leading dashes, e.g. `conlyopt`.",
         ),
         "flags": attr.label_list(
-            doc = "Starlark build settings 'multitransition.transition' may set, " +
-                  "e.g. a 'bool_flag'.",
+            doc = "Starlark build settings `multitransition.transition` may set, " +
+                  "e.g. a `bool_flag`.",
         ),
     },
-    doc = "Extends the options transitions may set and the aspects 'multitransition.target' may apply.",
+    doc = "Extends the options transitions may set and the aspects `multitransition.target` may apply.",
 )
+
+_BUILD = """\
+load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
+
+bzl_library(
+    name = "defs",
+    srcs = ["defs.bzl"],
+    visibility = ["//visibility:public"],
+)
+
+# Each aspect's '.bzl' file is listed in 'srcs', as its 'bzl_library' isn't
+# known. It must be visible to this repo.
+bzl_library(
+    name = "aspects",
+    srcs = ["aspects.bzl"] + {aspect_bzl_files},
+    visibility = ["//visibility:public"],
+    deps = ["{rule_library}"],
+)
+"""
 
 _OPTIONS_BZL = """\
 \"\"\"
@@ -76,7 +95,13 @@ _ASPECT_RULE = """multitransition_target_{index} = multitransition_target_rule_f
 _ASPECT_ENTRY = """    "{aspect}": multitransition_target_{index},\n"""
 
 def _options_repo_impl(rctx):
-    rctx.file("BUILD.bazel", "")
+    rctx.file(
+        "BUILD.bazel",
+        content = _BUILD.format(
+            aspect_bzl_files = repr([aspect.split("%")[0] for aspect in rctx.attr.aspects]),
+            rule_library = rctx.attr.rule_library,
+        ),
+    )
     rctx.file(
         "defs.bzl",
         content = _OPTIONS_BZL.format(options = repr(rctx.attr.options)),
@@ -117,6 +142,10 @@ _options_repo = repository_rule(
             doc = "Canonical `<bzl file>%<name>` of each aspect.",
         ),
         "options": attr.string_list(mandatory = True),
+        "rule_library": attr.string(
+            mandatory = True,
+            doc = "Canonical label of the 'bzl_library' for 'rule_bzl'.",
+        ),
         "rule_bzl": attr.string(
             mandatory = True,
             doc = "Canonical label of the `.bzl` exporting the rule factory.",
@@ -141,6 +170,7 @@ def _impl(mctx):
         name = "multitransition_config",
         aspects = sorted(aspects),
         rule_bzl = str(Label("//:multitransition_target_rule_for_aspect.bzl")),
+        rule_library = str(Label("//:multitransition_target_rule_for_aspect")),
         options = DEFAULT_OPTIONS + sorted([
             option
             for option in extra

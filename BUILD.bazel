@@ -1,0 +1,41 @@
+load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
+
+# inputs for '//docs'
+exports_files(
+    [
+        "defs.bzl",
+        "extensions.bzl",
+    ],
+    visibility = ["//docs:__pkg__"],
+)
+
+bzl_library(
+    name = "defs",
+    srcs = [
+        "aspect_config.bzl",
+        "defs.bzl",
+        "multitransition_target.bzl",
+        "multitransition_test.bzl",
+        "transition_config.bzl",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//private",
+        "@multitransition_config//:aspects",
+    ],
+)
+
+bzl_library(
+    name = "extensions",
+    srcs = ["extensions.bzl"],
+    visibility = ["//visibility:public"],
+    deps = ["//private"],
+)
+
+# loaded by the generated '@multitransition_config//:aspects.bzl'
+bzl_library(
+    name = "multitransition_target_rule_for_aspect",
+    srcs = ["multitransition_target_rule_for_aspect.bzl"],
+    visibility = ["//visibility:public"],
+    deps = ["//private"],
+)
