@@ -42,9 +42,10 @@ Defines a binary and additional variants using the specified transitions.
 
 Creates a binary target along with binary target variants, with one
 variant per item in `transitions`. Each `<name>.<config name>` variant
-runs the binary built in that transition with `bazel run`. With
-`--@rules_multitransition//config:multitransition_binary=False`, only the
-underlying binary target is compatible, built without a transition.
+runs the binary built in that transition with `bazel run`. The underlying
+binary target is always compatible. With
+`--@rules_multitransition//config:multitransition_binary=False`, the
+variants are incompatible, leaving only the underlying binary target.
 
 
 **PARAMETERS**

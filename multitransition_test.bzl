@@ -50,6 +50,7 @@ def multitransition_test(
         rule = test_rule,
         transitioned_rule = transitioned_test,
         flag = "multitransition_test",
+        exclusive = True,
         name = name,
         transitions = transitions,
         tags = tags,
