@@ -48,11 +48,9 @@ def multitransition_test(
       size: **string**
           Applies to all test targets.
       target_compatible_with: **list of labels**
-          Not permitted.
+          Applies to all test targets.
       **kwargs: Additional attributes to pass to the test rule.
     """
-    if target_compatible_with:
-        fail("'target_compatible_with' is not settable with 'multitransition.test'")
     tags_with_manual = _append_if_missing(tags, "manual")
 
     test_rule(
@@ -60,7 +58,7 @@ def multitransition_test(
         tags = tags,
         timeout = timeout,
         size = size,
-        target_compatible_with = select({
+        target_compatible_with = target_compatible_with + select({
             Label("//config:multitransition_test_enabled"): [
                 Label("@platforms//:incompatible"),
             ],
@@ -74,7 +72,7 @@ def multitransition_test(
         tags = tags_with_manual,
         timeout = timeout,
         size = size,
-        target_compatible_with = select({
+        target_compatible_with = target_compatible_with + select({
             Label("//config:multitransition_test_enabled"): [],
             Label("//config:multitransition_test_disabled"): [
                 Label("@platforms//:incompatible"),
@@ -99,7 +97,7 @@ def multitransition_test(
             tags = tags,
             timeout = timeout,
             size = size,
-            target_compatible_with = select({
+            target_compatible_with = target_compatible_with + select({
                 Label("//config:multitransition_test_enabled"): [],
                 Label("//config:multitransition_test_disabled"): [
                     Label("@platforms//:incompatible"),

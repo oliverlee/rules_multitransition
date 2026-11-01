@@ -84,7 +84,7 @@ target.
 | <a id="multitransition.test-tags"></a>tags |  **list of strings** Tags to apply to all test targets.   |  `[]` |
 | <a id="multitransition.test-timeout"></a>timeout |  **string** Applies to all test targets.   |  `None` |
 | <a id="multitransition.test-size"></a>size |  **string** Applies to all test targets.   |  `None` |
-| <a id="multitransition.test-target_compatible_with"></a>target_compatible_with |  **list of labels** Not permitted.   |  `[]` |
+| <a id="multitransition.test-target_compatible_with"></a>target_compatible_with |  **list of labels** Applies to all test targets.   |  `[]` |
 | <a id="multitransition.test-kwargs"></a>kwargs |  Additional attributes to pass to the test rule.   |  none |
 
 

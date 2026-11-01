@@ -1,0 +1,24 @@
+load("@rules_cc//cc:defs.bzl", "cc_test")
+load("@rules_multitransition//:defs.bzl", "multitransition")
+
+# only 'cortex_m_test.cortex-m3' is compatible: the host targets don't satisfy
+# '@platforms//os:none' and are skipped
+multitransition.test(
+    cc_test,
+    name = "cortex_m_test",
+    srcs = ["cortex_m.cpp"],
+    target_compatible_with = ["@platforms//os:none"],
+    transitions = [
+        multitransition.transition(
+            name = "host",
+            platform = "@platforms//host",
+        ),
+        multitransition.transition(
+            name = "cortex-m3",
+            flags = {
+                "@cortex_m//config:semihosting": True,
+            },
+            platform = "@cortex_m//platform:lm3s6965evb",
+        ),
+    ],
+)
