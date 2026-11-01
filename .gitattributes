@@ -1,0 +1,8 @@
+.github export-ignore
+.zed export-ignore
+docs export-ignore
+tools export-ignore
+
+MODULE.bazel.lock linguist-generated
+docs/*.md linguist-generated
+examples/MODULE.bazel.lock linguist-generated
