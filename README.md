@@ -173,6 +173,14 @@ variants depend on it. `lib_test` is then an ordinary test, and
 and `multitransition.binary` don't accept an aspect: their variants must be
 runnable.
 
+With Bazel 7, a `multitransition.target` of a test fails with conflicting
+actions when the test and a variant are built together, e.g. with
+`bazel test //...`, and the variant's configuration only applies an aspect.
+Bazel 7 trims the test options from the variant, which builds the test in a
+second configuration with the same output directory. Pass
+`--experimental_retain_test_configuration_across_testonly` to keep the test
+options for `testonly` targets.
+
 The aspect must be declared (see
 [Declaring options and aspects](#declaring-options-and-aspects)).
 

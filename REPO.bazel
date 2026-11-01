@@ -1,6 +1,0 @@
-"""repo settings
-"""
-
-ignore_directories([
-    "**/bazel-*",
-])
