@@ -38,31 +38,60 @@ def _rule_and_attrs(config):
 
     return RULES[aspect], {"output_group": config.aspect.output_group}
 
-def multitransition_target(*, name, src, transitions, **kwargs):
+def multitransition_target(
+        rule,
+        *,
+        name,
+        transitions,
+        tags = [],
+        testonly = False,
+        visibility = None,
+        **kwargs):
     """
-    Builds a target in each of the specified transitions.
+    Defines a target and additional variants using the specified transitions.
 
-    Each `<name>.<config name>` target forwards the providers of `src`. If the
-    transition sets `aspect`, the aspect is applied to `src` instead and its
-    `output_group` is the default output.
+    Creates a target along with target variants, with one variant per item in
+    `transitions`. Each `<name>.<config name>` variant forwards the providers of
+    the target built in that transition. If the transition sets `aspect`, the
+    aspect is applied to the target instead and its `output_group` is the
+    default output. To transition an existing target, use `alias` as `rule`
+    with `actual`.
 
     Args:
+      rule: **rule**
+          The rule to use, e.g. `cc_library`.
       name: **string**
-          The base name of the targets. Each transition creates
-          `<name>.<config name>`.
-      src: **label**
-          The target to transition.
+          The name of the underlying target. Additional target variants use it
+          as the base name.
       transitions: **list of `multitransition.transition`**
-          The configurations to build `src` in.
-      **kwargs: Common attributes to apply to all targets, e.g. `tags`.
+          One per variant target.
+      tags: **list of strings**
+          Tags to apply to all targets.
+      testonly: **bool**
+          Applies to all targets. Required if `rule` creates a test, e.g.
+          `cc_test`.
+      visibility: **list of labels**
+          Visibility of the target and its variants.
+      **kwargs: Additional attributes to pass to the rule.
     """
+    rule(
+        name = name,
+        tags = tags,
+        testonly = testonly,
+        visibility = visibility,
+        **kwargs
+    )
+
     for i, config in enumerate(transitions):
         if not is_transition_config(config):
             fail("Invalid transition config: '{}'. Use 'multitransition.transition'.".format(config))
-        rule, attrs = _rule_and_attrs(config)
-        rule(
+        variant_rule, attrs = _rule_and_attrs(config)
+        variant_rule(
             name = name + "." + (config.name or str(i)),
-            src = src,
+            src = name,
             options = transition_options(config),
-            **(attrs | kwargs)
+            tags = tags,
+            testonly = testonly,
+            visibility = visibility,
+            **attrs
         )

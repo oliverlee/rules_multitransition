@@ -31,16 +31,12 @@ multitransition.test(
     ]
 ]
 
-cc_library(
+# Without an aspect, each 'multitransition.target' variant forwards the
+# providers of the target built in the transition.
+multitransition.target(
+    cc_library,
     name = "dummy",
     srcs = ["dummy.cpp"],
-)
-
-# Without an aspect, 'multitransition.target' forwards the providers of 'src',
-# built in the transition.
-multitransition.target(
-    name = "dummy_transitioned",
-    src = ":dummy",
     transitions = [
         multitransition.transition(
             name = "opt",
@@ -53,5 +49,5 @@ compile_flags_test(
     name = "target_uses_opt_compile_flags_test",
     expect = "present",
     flag = "-O2",
-    target = ":dummy_transitioned.opt",
+    target = ":dummy.opt",
 )
