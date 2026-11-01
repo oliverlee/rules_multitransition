@@ -17,6 +17,7 @@ jobs:
           - 'ubuntu-latest'
           - 'macos-latest'
         module:
+          - '.'
           - 'examples'
         bazel:
           - ''  # pinned in .bazeliskrc

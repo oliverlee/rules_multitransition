@@ -1,0 +1,12 @@
+load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
+
+package(default_visibility = ["//:__subpackages__"])
+
+bzl_library(
+    name = "private",
+    srcs = glob(["*.bzl"]),
+    deps = [
+        "@multitransition_config//:defs",
+        "@rules_cc//cc/common",
+    ],
+)

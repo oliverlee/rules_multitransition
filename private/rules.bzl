@@ -138,8 +138,8 @@ def attrs(aspects = []):
     Attributes of a transitioned rule.
 
     Args:
-      aspects: list of aspect
-        Aspects applied to `src`.
+      aspects: **list of aspects**
+          The aspects to apply to `src`.
 
     Returns:
       A dict with the `options` and `src` attributes.

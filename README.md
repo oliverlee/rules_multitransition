@@ -66,8 +66,15 @@ def cc_multi_test(
 ### Options
 
 `multitransition.transition` can set these native options as keyword arguments
-without any setup: `compilation_mode`, `copt`, `cxxopt`, `extra_toolchains`,
-`features`, `linkopt`, `platform` (a single label, sets `--platforms`).
+without any setup:
+
+- `compilation_mode`
+- `copt`
+- `cxxopt`
+- `extra_toolchains`
+- `features`
+- `linkopt`
+- `platform` (a single label, sets `--platforms`)
 
 Other native options and Starlark build settings must be declared in
 `MODULE.bazel`. Declarations from all modules in the dependency graph are
@@ -180,3 +187,13 @@ $ bazel test \
   --@rules_multitransition//config:multitransition_test=False \
   //:my_test
 ```
+
+## Reference
+
+- [`defs.bzl`](docs/defs.md)
+  - `multitransition.test`
+  - `multitransition.target`
+  - `multitransition.transition`
+  - `multitransition.aspect`
+- [`extensions.bzl`](docs/extensions.md)
+  - `multitransition_config`

@@ -29,28 +29,27 @@ def multitransition_test(
     """
     Defines a test and additional variants using the specified transitions.
 
-    Args:
-      test_rule: rule
-        Underlying test rule to use.
-      name: string
-        Name for the underlying test target. Additional test variants use this
-        as the base name.
-      transitions: list of 'multitransition.transition'
-        Configurations for each variant test target.
-      tags: string_list
-        Tags to apply to all test targets.
-      timeout: string
-        Applies to all test targets.
-      size: string
-        Applies to all test targets.
-      target_compatible_with: label_list
-        Use of this attr is not permitted.
-      **kwargs:
-        Additional keyword arguments to pass to the test rule.
-
     Creates a test target along with test target variants, with one variant per
-    item in 'transitions'. All variants are aggregated with a 'test_suite'
+    item in `transitions`. All variants are aggregated with a `test_suite`
     target.
+
+    Args:
+      test_rule: **rule**
+          The test rule to use, e.g. `cc_test`.
+      name: **string**
+          The name of the underlying test target. Additional test variants use
+          it as the base name.
+      transitions: **list of `multitransition.transition`**
+          One per variant test target.
+      tags: **list of strings**
+          Tags to apply to all test targets.
+      timeout: **string**
+          Applies to all test targets.
+      size: **string**
+          Applies to all test targets.
+      target_compatible_with: **list of labels**
+          Not permitted.
+      **kwargs: Additional attributes to pass to the test rule.
     """
     if target_compatible_with:
         fail("'target_compatible_with' is not settable with 'multitransition.test'")

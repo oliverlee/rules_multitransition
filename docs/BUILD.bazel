@@ -1,0 +1,33 @@
+load("@bazel_skylib//rules:diff_test.bzl", "diff_test")
+load("@rules_shell//shell:sh_binary.bzl", "sh_binary")
+load("@stardoc//stardoc:stardoc.bzl", "stardoc")
+
+DOCS = [
+    "defs",
+    "extensions",
+]
+
+[
+    (
+        stardoc(
+            name = name + "_docs",
+            out = name + "_generated.md",
+            input = "//:{}.bzl".format(name),
+            deps = ["//:" + name],
+        ),
+        diff_test(
+            name = name + "_docs_test",
+            failure_message = "Run 'bazel run //docs:update' to update the docs.",
+            file1 = name + "_generated.md",
+            file2 = name + ".md",
+        ),
+    )
+    for name in DOCS
+]
+
+sh_binary(
+    name = "update",
+    srcs = ["update.bash"],
+    args = ["$(rootpath {}_generated.md)".format(name) for name in DOCS],
+    data = [name + "_generated.md" for name in DOCS],
+)

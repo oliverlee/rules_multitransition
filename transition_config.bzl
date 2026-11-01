@@ -18,28 +18,25 @@ def transition_config(*, name = None, flags = {}, aspect = None, **kwargs):
     """
     Describes a configuration to transition a target to.
 
-    Args:
-      name: string
-        Name of the configuration. 'multitransition.test' uses it as the
-        suffix of the variant target, '<test>.<name>', and defaults to the
-        index.
-      flags: dict
-        Build setting label or option to value. Use this for Starlark build
-        settings, e.g. {"@cortex_m//config:semihosting": True}.
-      aspect: 'multitransition.aspect'
-        Optional, only for 'multitransition.target'. The aspect to apply and
-        its output group to use as the default output.
-      **kwargs:
-        Native option name to value, e.g. compilation_mode = "dbg". The
-        target platform is set with platform = <label> (a single label).
-
-    Returns:
-      A 'multitransition.transition' struct for 'multitransition.test' or
-      'multitransition.target'.
-
     Values may be a string, bool, int, Label, or a list of these. List
     options are appended to. Every option must be a default option or
-    declared with the 'multitransition_config' module extension.
+    added with `multitransition_config.extend`.
+
+    Args:
+      name: **string**
+          The name of the configuration, used as the suffix of each variant
+          target, `<name>.<config name>`. Defaults to the index.
+      flags: **dict**
+          Build setting label or `//command_line_option:<name>` to value, e.g.
+          `{"@cortex_m//config:semihosting": True}`.
+      aspect: **`multitransition.aspect`**
+          Only for `multitransition.target`: the aspect to apply, whose output
+          group becomes the default output.
+      **kwargs: Native option name to value, e.g. `compilation_mode = "dbg"`.
+          Set the target platform with `platform = <label>`, a single label.
+
+    Returns:
+      A configuration for `multitransition.test` or `multitransition.target`.
     """
     for key in kwargs:
         if key in flags:

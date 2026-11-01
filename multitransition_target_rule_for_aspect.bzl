@@ -25,8 +25,8 @@ def multitransition_target_rule_for_aspect(aspect):
     Creates a rule that builds `src` with `options` and applies `aspect` to it.
 
     Args:
-      aspect: aspect
-        The aspect applied to `src`.
+      aspect: **aspect**
+          The aspect to apply to `src`.
 
     Returns:
       A rule with `src`, `options`, and `output_group` attributes. Its default

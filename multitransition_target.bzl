@@ -42,19 +42,19 @@ def multitransition_target(*, name, src, transitions, **kwargs):
     """
     Builds a target in each of the specified transitions.
 
-    Args:
-      name: string
-        Base name of the targets. Each transition creates '<name>.<config>'.
-      src: label
-        The target to transition.
-      transitions: list of 'multitransition.transition'
-        Configurations to build 'src' in.
-      **kwargs:
-        Common attributes to apply to all targets, e.g. 'tags'.
+    Each `<name>.<config name>` target forwards the providers of `src`. If the
+    transition sets `aspect`, the aspect is applied to `src` instead and its
+    `output_group` is the default output.
 
-    Each '<name>.<config>' target forwards the providers of 'src'. If the
-    transition sets 'aspect', the aspect is applied to 'src' instead and its
-    'output_group' is the default output.
+    Args:
+      name: **string**
+          The base name of the targets. Each transition creates
+          `<name>.<config name>`.
+      src: **label**
+          The target to transition.
+      transitions: **list of `multitransition.transition`**
+          The configurations to build `src` in.
+      **kwargs: Common attributes to apply to all targets, e.g. `tags`.
     """
     for i, config in enumerate(transitions):
         if not is_transition_config(config):
