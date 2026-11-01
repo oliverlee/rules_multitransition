@@ -10,9 +10,15 @@ multitransition_config = use_extension(
     dev_dependency = True,
 )
 multitransition_config.extend(
-    aspects = ["@rules_clang_tidy//:aspects.bzl%check"],
-    command_line_options = ["conlyopt"],
-    flags = ["@cortex_m//config:semihosting"],
+    aspects = [
+        "@rules_clang_tidy//:aspects.bzl%check",
+    ],
+    command_line_options = [
+        "conlyopt",
+    ],
+    flags = [
+        "@cortex_m//config:semihosting",
+    ],
 )
 ```
 
