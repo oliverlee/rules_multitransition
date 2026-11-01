@@ -23,4 +23,14 @@ test --test_output=errors
 # https://github.com/oliverlee/cortex_m/issues/75
 test --use_target_platform_for_tests
 
+# skip the examples that use 'cortex_m', which fetches QEMU with nix
+common:no_nix --deleted_packages=target_compatible_with
+common:no_nix --deleted_packages=target_platform
+common:no_nix --deleted_packages=target_platform_with_custom_flag
+
+# Bazel 7: skip the 'cortex_m' examples, which also require Bazel 8, and fix
+# conflicting actions in 'examples/aspect'
+common:bazel7 --config=no_nix
+common:bazel7 --experimental_retain_test_configuration_across_testonly
+
 try-import %workspace%/user.bazelrc

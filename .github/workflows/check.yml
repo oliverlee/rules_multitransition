@@ -34,22 +34,12 @@ jobs:
           - "macos-latest"
         bazel:
           - "" # pinned in .bazeliskrc
-          - "7.x"
+          - "7.1.0"
           - "8.x"
           - "9.x"
         include:
-          - targets: "//..." # default for all legs, replaced for Bazel 7
-          - bazel: "7.x"
-            # Examples that use 'cortex_m' require Bazel 8
-            targets: >-
-              --
-              //...
-              -//target_platform/...
-              -//target_platform_with_custom_flag/...
-              -//target_compatible_with/...
-            flags: >-
-              --lockfile_mode=off
-              --experimental_retain_test_configuration_across_testonly
+          - bazel: "7.1.0"
+            flags: "--lockfile_mode=off --config=bazel7"
           - bazel: "8.x"
             flags: "--lockfile_mode=off"
           - bazel: "9.x"
@@ -62,9 +52,12 @@ jobs:
       - uses: ./.github/actions/ci-env-setup
         with:
           buildbuddy-api-key: ${{ secrets.BUILDBUDDY_API_KEY }}
-      - working-directory: examples
+      # test the release archive, which the BCR presubmit uses
+      - run: |
+          git archive --prefix=archive/ HEAD | tar x -C "$RUNNER_TEMP"
+      - working-directory: ${{ runner.temp }}/archive/examples
         run: |
-          bazel test ${{ matrix.flags }} ${{ matrix.targets }}
+          bazel test ${{ matrix.flags }} //...
 
   buildifier:
     runs-on: ubuntu-latest

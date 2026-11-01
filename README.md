@@ -32,6 +32,14 @@ multitransition.test(
 $ bazel test //...  # runs //:my_test.gcc and //:my_test.llvm-opt
 ```
 
+## Installation
+
+Add the module to `MODULE.bazel`. Requires Bazel 7.1.0 or later.
+
+```bzl
+bazel_dep(name = "rules_multitransition", version = "0.1.0")
+```
+
 ## Usage
 
 Each macro takes the rule to instantiate, its `name`, and a list of
