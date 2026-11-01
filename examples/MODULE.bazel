@@ -1,4 +1,9 @@
 bazel_dep(
+    name = "bazel_skylib",
+    version = "1.8.2",
+    dev_dependency = True,
+)
+bazel_dep(
     name = "cortex_m",
     dev_dependency = True,
 )
@@ -57,7 +62,7 @@ bazel_dep(
 
 local_path_override(
     module_name = "rules_multitransition",
-    path = "../../",
+    path = "..",
 )
 
 bazel_dep(
@@ -66,7 +71,7 @@ bazel_dep(
 )
 local_path_override(
     module_name = "rules_multitransition_test",
-    path = "../../test",
+    path = "../test",
 )
 
 multitransition_config = use_extension(
@@ -75,5 +80,8 @@ multitransition_config = use_extension(
     dev_dependency = True,
 )
 multitransition_config.extend(
+    # //aspect
+    aspects = ["@rules_multitransition_test//:transitive_source_files.bzl%transitive_source_files"],
+    # //target_platform_with_custom_flag
     flags = ["@cortex_m//config:semihosting"],
 )

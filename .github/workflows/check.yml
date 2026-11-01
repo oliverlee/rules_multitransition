@@ -16,6 +16,8 @@ jobs:
         os:
           - 'ubuntu-latest'
           - 'macos-latest'
+        module:
+          - 'examples'
         bazel:
           - ''  # pinned in .bazeliskrc
           - '9.x'
@@ -27,7 +29,8 @@ jobs:
     - uses: ./.github/actions/ci-env-setup
       with:
         buildbuddy-api-key: ${{ secrets.BUILDBUDDY_API_KEY }}
-    - run: |
+    - working-directory: ${{ matrix.module }}
+      run: |
         bazel test //... ${{ matrix.bazel && '--lockfile_mode=off' || '' }}
 
   buildifier:
