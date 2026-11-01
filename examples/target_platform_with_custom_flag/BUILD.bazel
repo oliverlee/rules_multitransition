@@ -1,6 +1,6 @@
 load("@rules_cc//cc:defs.bzl", "cc_test")
 load("@rules_multitransition//:defs.bzl", "multitransition")
-load("@rules_multitransition_test//:compile_flags_test.bzl", "compile_flags_test")
+load("//test:compile_flags_test.bzl", "compile_flags_test")
 
 # '@cortex_m//config:semihosting' is declared with the 'multitransition_config'
 # module extension in MODULE.bazel
