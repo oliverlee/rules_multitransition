@@ -68,14 +68,17 @@ underlying binary target is compatible, built without a transition.
 <pre>
 load("@rules_multitransition//:defs.bzl", "multitransition")
 
-multitransition.target(*, <a href="#multitransition.target-name">name</a>, <a href="#multitransition.target-src">src</a>, <a href="#multitransition.target-transitions">transitions</a>, <a href="#multitransition.target-kwargs">**kwargs</a>)
+multitransition.target(<a href="#multitransition.target-rule">rule</a>, *, <a href="#multitransition.target-name">name</a>, <a href="#multitransition.target-transitions">transitions</a>, <a href="#multitransition.target-tags">tags</a>, <a href="#multitransition.target-testonly">testonly</a>, <a href="#multitransition.target-visibility">visibility</a>, <a href="#multitransition.target-kwargs">**kwargs</a>)
 </pre>
 
-Builds a target in each of the specified transitions.
+Defines a target and additional variants using the specified transitions.
 
-Each `<name>.<config name>` target forwards the providers of `src`. If the
-transition sets `aspect`, the aspect is applied to `src` instead and its
-`output_group` is the default output.
+Creates a target along with target variants, with one variant per item in
+`transitions`. Each `<name>.<config name>` variant forwards the providers of
+the target built in that transition. If the transition sets `aspect`, the
+aspect is applied to the target instead and its `output_group` is the
+default output. To transition an existing target, use `alias` as `rule`
+with `actual`.
 
 
 **PARAMETERS**
@@ -83,10 +86,13 @@ transition sets `aspect`, the aspect is applied to `src` instead and its
 
 | Name  | Description | Default Value |
 | :------------- | :------------- | :------------- |
-| <a id="multitransition.target-name"></a>name |  **string** The base name of the targets. Each transition creates `<name>.<config name>`.   |  none |
-| <a id="multitransition.target-src"></a>src |  **label** The target to transition.   |  none |
-| <a id="multitransition.target-transitions"></a>transitions |  **list of `multitransition.transition`** The configurations to build `src` in.   |  none |
-| <a id="multitransition.target-kwargs"></a>kwargs |  Common attributes to apply to all targets, e.g. `tags`.   |  none |
+| <a id="multitransition.target-rule"></a>rule |  **rule** The rule to use, e.g. `cc_library`.   |  none |
+| <a id="multitransition.target-name"></a>name |  **string** The name of the underlying target. Additional target variants use it as the base name.   |  none |
+| <a id="multitransition.target-transitions"></a>transitions |  **list of `multitransition.transition`** One per variant target.   |  none |
+| <a id="multitransition.target-tags"></a>tags |  **list of strings** Tags to apply to all targets.   |  `[]` |
+| <a id="multitransition.target-testonly"></a>testonly |  **bool** Applies to all targets. Required if `rule` creates a test, e.g. `cc_test`.   |  `False` |
+| <a id="multitransition.target-visibility"></a>visibility |  **list of labels** Visibility of the target and its variants.   |  `None` |
+| <a id="multitransition.target-kwargs"></a>kwargs |  Additional attributes to pass to the rule.   |  none |
 
 
 <a id="multitransition.test"></a>

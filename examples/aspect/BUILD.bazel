@@ -2,17 +2,6 @@ load("@bazel_skylib//rules:diff_test.bzl", "diff_test")
 load("@rules_cc//cc:defs.bzl", "cc_library", "cc_test")
 load("@rules_multitransition//:defs.bzl", "multitransition")
 
-cc_library(
-    name = "lib",
-    hdrs = ["lib.hpp"],
-)
-
-cc_test(
-    name = "lib_test",
-    srcs = ["lib_test.cpp"],
-    deps = [":lib"],
-)
-
 SOURCE_FILES = multitransition.transition(
     name = "source_files",
     aspect = multitransition.aspect(
@@ -21,28 +10,40 @@ SOURCE_FILES = multitransition.transition(
     ),
 )
 
-# bazel build //:lib_transitioned.source_files
+# bazel build //aspect:lib.source_files
 multitransition.target(
-    name = "lib_transitioned",
-    src = ":lib",
+    cc_library,
+    name = "lib",
+    hdrs = ["lib.hpp"],
     transitions = [SOURCE_FILES],
 )
 
 multitransition.target(
-    name = "lib_test_transitioned",
+    cc_test,
+    name = "lib_test",
     testonly = True,
-    src = ":lib_test",
+    srcs = ["lib_test.cpp"],
+    transitions = [SOURCE_FILES],
+    deps = [":lib"],
+)
+
+# an existing target, e.g. from another package or repo, through 'alias'
+multitransition.target(
+    alias,
+    name = "lib_alias",
+    actual = ":lib",
     transitions = [SOURCE_FILES],
 )
 
 [
     diff_test(
         name = "{}_source_files_test".format(target),
-        file1 = ":{}_transitioned.source_files".format(target),
-        file2 = "{}.source_files.expected.txt".format(target),
+        file1 = ":{}.source_files".format(target),
+        file2 = "{}.source_files.expected.txt".format(expected),
     )
-    for target in [
-        "lib",
-        "lib_test",
+    for target, expected in [
+        ("lib", "lib"),
+        ("lib_test", "lib_test"),
+        ("lib_alias", "lib"),
     ]
 ]

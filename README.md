@@ -157,11 +157,13 @@ See [`examples/binary`](examples/binary).
 
 ### Aspects
 
-`multitransition.target` builds a target in each configuration. Each
-`<name>.<config>` target forwards the providers of `src`. A configuration may
-also apply an aspect with `multitransition.aspect`; the default output of that
-target is then the aspect's `output_group`. Declare the aspect in
-`MODULE.bazel`:
+`multitransition.target` defines a target with `rule` and a variant for each
+configuration. Each `<name>.<config>` target forwards the providers of the
+target built in that configuration, and `<name>` itself is an ordinary target.
+To transition an existing target, use `alias` as `rule` with `actual`. A
+configuration may also apply an aspect with `multitransition.aspect`; the
+default output of that target is then the aspect's `output_group`. Declare the
+aspect in `MODULE.bazel`:
 
 ```bzl
 # MODULE.bazel
@@ -173,8 +175,9 @@ multitransition_config.extend(
 ```bzl
 # BUILD.bazel
 multitransition.target(
-    name = "lib_transitioned",
-    src = ":lib",
+    cc_library,
+    name = "lib",
+    srcs = ["lib.cpp"],
     transitions = [
         multitransition.transition(
             name = "clang-tidy-report",
@@ -188,7 +191,7 @@ multitransition.target(
 ```
 
 ```sh
-$ bazel build //:lib_transitioned.clang-tidy-report
+$ bazel build //:lib.clang-tidy-report
 ```
 
 See [`examples/aspect`](examples/aspect).
