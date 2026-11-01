@@ -36,7 +36,8 @@ def transition_config(*, name = None, flags = {}, aspect = None, **kwargs):
           Set the target platform with `platform = <label>`, a single label.
 
     Returns:
-      A configuration for `multitransition.test` or `multitransition.target`.
+      A configuration for `multitransition.test`, `multitransition.binary`, or
+      `multitransition.target`.
     """
     for key in kwargs:
         if key in flags:

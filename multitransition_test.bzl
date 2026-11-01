@@ -31,7 +31,8 @@ def multitransition_test(
 
     Creates a test target along with test target variants, with one variant per
     item in `transitions`. All variants are aggregated with a `test_suite`
-    target.
+    target. With `--@rules_multitransition//config:multitransition_test=False`,
+    only the underlying test target is compatible, built without a transition.
 
     Args:
       test_rule: **rule**

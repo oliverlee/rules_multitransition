@@ -27,6 +27,38 @@ Describes an aspect to apply and the output group to use from it.
 An aspect config for `multitransition.transition`.
 
 
+<a id="multitransition.binary"></a>
+
+## multitransition.binary
+
+<pre>
+load("@rules_multitransition//:defs.bzl", "multitransition")
+
+multitransition.binary(<a href="#multitransition.binary-binary_rule">binary_rule</a>, *, <a href="#multitransition.binary-name">name</a>, <a href="#multitransition.binary-transitions">transitions</a>, <a href="#multitransition.binary-tags">tags</a>, <a href="#multitransition.binary-visibility">visibility</a>, <a href="#multitransition.binary-kwargs">**kwargs</a>)
+</pre>
+
+Defines a binary and additional variants using the specified transitions.
+
+Creates a binary target along with binary target variants, with one
+variant per item in `transitions`. Each `<name>.<config name>` variant
+runs the binary built in that transition with `bazel run`. With
+`--@rules_multitransition//config:multitransition_binary=False`, only the
+underlying binary target is compatible, built without a transition.
+
+
+**PARAMETERS**
+
+
+| Name  | Description | Default Value |
+| :------------- | :------------- | :------------- |
+| <a id="multitransition.binary-binary_rule"></a>binary_rule |  **rule** The binary rule to use, e.g. `cc_binary`.   |  none |
+| <a id="multitransition.binary-name"></a>name |  **string** The name of the underlying binary target. Additional binary variants use it as the base name.   |  none |
+| <a id="multitransition.binary-transitions"></a>transitions |  **list of `multitransition.transition`** One per variant binary target.   |  none |
+| <a id="multitransition.binary-tags"></a>tags |  **list of strings** Tags to apply to all binary targets.   |  `[]` |
+| <a id="multitransition.binary-visibility"></a>visibility |  **list of labels** Visibility of the binary and its variants.   |  `None` |
+| <a id="multitransition.binary-kwargs"></a>kwargs |  Additional attributes to pass to the binary rule.   |  none |
+
+
 <a id="multitransition.target"></a>
 
 ## multitransition.target
@@ -70,7 +102,8 @@ Defines a test and additional variants using the specified transitions.
 
 Creates a test target along with test target variants, with one variant per
 item in `transitions`. All variants are aggregated with a `test_suite`
-target.
+target. With `--@rules_multitransition//config:multitransition_test=False`,
+only the underlying test target is compatible, built without a transition.
 
 
 **PARAMETERS**
@@ -117,6 +150,7 @@ added with `multitransition_config.extend`.
 
 **RETURNS**
 
-A configuration for `multitransition.test` or `multitransition.target`.
+A configuration for `multitransition.test`, `multitransition.binary`, or
+`multitransition.target`.
 
 

@@ -1,0 +1,22 @@
+load("@bazel_skylib//rules:native_binary.bzl", "native_test")
+load("@rules_cc//cc:defs.bzl", "cc_binary")
+load("@rules_multitransition//:defs.bzl", "multitransition")
+
+multitransition.binary(
+    cc_binary,
+    name = "app",
+    srcs = ["app.cpp"],
+    transitions = [
+        multitransition.transition(
+            name = "opt",
+            compilation_mode = "opt",
+        ),
+    ],
+)
+
+# runs 'app.opt', which only succeeds when built in the transition
+native_test(
+    name = "app_opt_test",
+    src = ":app.opt",
+    out = "app_opt_test.bin",
+)
