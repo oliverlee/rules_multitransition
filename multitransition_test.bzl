@@ -2,19 +2,10 @@
 Implementation of 'multitransition.test' macro.
 """
 
-load("//:transition_config.bzl", "is_transition_config")
+load("//:multitransition_executable.bzl", "multitransition_executable")
 load("//private:rules.bzl", "transitioned_test")
-load("//private:transition_options.bzl", "transition_options")
 
 visibility("private")
-
-def _append_if_missing(values, item):
-    """
-    Appends an element to a list if not already present.
-    """
-    if item in values:
-        return values
-    return values + [item]
 
 def multitransition_test(
         test_rule,
@@ -25,13 +16,15 @@ def multitransition_test(
         timeout = None,
         size = None,
         target_compatible_with = [],
+        visibility = None,
         **kwargs):
     """
     Defines a test and additional variants using the specified transitions.
 
     Creates a test target along with test target variants, with one variant per
     item in `transitions`. All variants are aggregated with a `test_suite`
-    target.
+    target. With `--@rules_multitransition//config:multitransition_test=False`,
+    only the underlying test target is compatible, built without a transition.
 
     Args:
       test_rule: **rule**
@@ -49,64 +42,29 @@ def multitransition_test(
           Applies to all test targets.
       target_compatible_with: **list of labels**
           Applies to all test targets.
+      visibility: **list of labels**
+          Visibility of the test, its variants, and the `test_suite`.
       **kwargs: Additional attributes to pass to the test rule.
     """
-    tags_with_manual = _append_if_missing(tags, "manual")
-
-    test_rule(
+    tests = multitransition_executable(
+        rule = test_rule,
+        transitioned_rule = transitioned_test,
+        flag = "multitransition_test",
         name = name,
+        transitions = transitions,
         tags = tags,
-        timeout = timeout,
-        size = size,
-        target_compatible_with = target_compatible_with + select({
-            Label("//config:multitransition_test_enabled"): [
-                Label("@platforms//:incompatible"),
-            ],
-            Label("//config:multitransition_test_disabled"): [],
-        }),
+        visibility = visibility,
+        target_compatible_with = target_compatible_with,
+        attrs = {
+            "size": size,
+            "timeout": timeout,
+        },
         **kwargs
     )
-
-    test_rule(
-        name = name + ".base",
-        tags = tags_with_manual,
-        timeout = timeout,
-        size = size,
-        target_compatible_with = target_compatible_with + select({
-            Label("//config:multitransition_test_enabled"): [],
-            Label("//config:multitransition_test_disabled"): [
-                Label("@platforms//:incompatible"),
-            ],
-        }),
-        **kwargs
-    )
-
-    tests = []
-    for i, config in enumerate(transitions):
-        if not is_transition_config(config):
-            fail("Invalid transition config: '{}'. Use 'multitransition.transition'.".format(config))
-        if config.aspect:
-            fail("'aspect' is only supported by 'multitransition.target'")
-
-        transitioned_test_name = name + "." + (config.name or str(i))
-        tests.append(transitioned_test_name)
-        transitioned_test(
-            name = transitioned_test_name,
-            src = name + ".base",
-            options = transition_options(config),
-            tags = tags,
-            timeout = timeout,
-            size = size,
-            target_compatible_with = target_compatible_with + select({
-                Label("//config:multitransition_test_enabled"): [],
-                Label("//config:multitransition_test_disabled"): [
-                    Label("@platforms//:incompatible"),
-                ],
-            }),
-        )
 
     native.test_suite(
         name = name + ".suite",
         tests = tests,
-        tags = tags_with_manual,
+        tags = tags if "manual" in tags else tags + ["manual"],
+        visibility = visibility,
     )

@@ -22,6 +22,11 @@ bazel_dep(
     dev_dependency = True,
 )
 bazel_dep(
+    name = "rules_shell",
+    version = "0.8.0",
+    dev_dependency = True,
+)
+bazel_dep(
     name = "toolchains_arm_gnu",
     dev_dependency = True,
 )
@@ -82,6 +87,10 @@ multitransition_config = use_extension(
 multitransition_config.extend(
     # //aspect
     aspects = ["@rules_multitransition_test//:transitive_source_files.bzl%transitive_source_files"],
-    # //target_platform_with_custom_flag
-    flags = ["@cortex_m//config:semihosting"],
+    flags = [
+        # //binary
+        "//binary:color",
+        # //target_platform_with_custom_flag
+        "@cortex_m//config:semihosting",
+    ],
 )
