@@ -45,7 +45,8 @@ variant per item in `transitions`. Each `<name>.<config name>` variant
 runs the binary built in that transition with `bazel run`. The underlying
 binary target is always compatible. With
 `--@rules_multitransition//config:multitransition_binary=False`, the
-variants are incompatible, leaving only the underlying binary target.
+variants are incompatible, leaving only the underlying binary target. To
+transition an existing binary, use `alias` as `binary_rule` with `actual`.
 
 
 **PARAMETERS**
@@ -113,6 +114,7 @@ Creates a test target along with test target variants, with one variant per
 item in `transitions`. All variants are aggregated with a `test_suite`
 target. With `--@rules_multitransition//config:multitransition_test=False`,
 only the underlying test target is compatible, built without a transition.
+To transition an existing test, use `alias` as `test_rule` with `actual`.
 
 
 **PARAMETERS**

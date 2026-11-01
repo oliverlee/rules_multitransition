@@ -25,6 +25,7 @@ def multitransition_test(
     item in `transitions`. All variants are aggregated with a `test_suite`
     target. With `--@rules_multitransition//config:multitransition_test=False`,
     only the underlying test target is compatible, built without a transition.
+    To transition an existing test, use `alias` as `test_rule` with `actual`.
 
     Args:
       test_rule: **rule**

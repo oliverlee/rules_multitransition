@@ -24,7 +24,8 @@ def multitransition_binary(
     runs the binary built in that transition with `bazel run`. The underlying
     binary target is always compatible. With
     `--@rules_multitransition//config:multitransition_binary=False`, the
-    variants are incompatible, leaving only the underlying binary target.
+    variants are incompatible, leaving only the underlying binary target. To
+    transition an existing binary, use `alias` as `binary_rule` with `actual`.
 
     Args:
       binary_rule: **rule**
