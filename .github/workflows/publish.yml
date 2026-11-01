@@ -10,14 +10,42 @@ on:
         required: true
         type: string
 
+env:
+  TAG: ${{ inputs.tag_name || github.event.release.tag_name }}
+
 jobs:
+  # Upload a release archive: GitHub's generated source archives may change
+  # their checksum.
+  # https://blog.bazel.build/2023/02/15/github-archive-checksum.html
+  archive:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TAG }}
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          archive="rules_multitransition-$TAG.tar.gz"
+          git archive --prefix="rules_multitransition-$TAG/" --output="$archive" "$TAG"
+
+          # If the archive already exists, compare the uncompressed tar, which
+          # doesn't depend on the git version used to compress it.
+          if gh release download "$TAG" --pattern "$archive" --dir existing; then
+            cmp <(gzip -dc "existing/$archive") <(gzip -dc "$archive")
+          else
+            gh release upload "$TAG" "$archive"
+          fi
+
   publish:
+    needs: archive
     uses: bazel-contrib/publish-to-bcr/.github/workflows/publish.yaml@v1.6.0
     with:
       tag_name: ${{ inputs.tag_name || github.event.release.tag_name }}
       registry_fork: oliverlee/bazel-central-registry
-      # attestations need the release archive from bazel-contrib's
-      # 'release_ruleset' workflow; releases use GitHub's source archive
+      # attestations need bazel-contrib's 'release_ruleset' workflow
       attest: false
     permissions:
       contents: write
