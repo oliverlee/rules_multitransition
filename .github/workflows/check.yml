@@ -59,6 +59,23 @@ jobs:
         run: |
           bazel test ${{ matrix.flags }} //...
 
+  minimum-versions:
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - "ubuntu-latest"
+          - "macos-latest"
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/ci-env-setup
+        with:
+          buildbuddy-api-key: ${{ secrets.BUILDBUDDY_API_KEY }}
+      - working-directory: minimum_versions
+        run: |
+          bazel test //...
+
   buildifier:
     runs-on: ubuntu-latest
     steps:
@@ -77,6 +94,7 @@ jobs:
     needs:
       - test
       - examples
+      - minimum-versions
       - buildifier
     steps:
       - uses: Kesin11/actions-timeline@v2
