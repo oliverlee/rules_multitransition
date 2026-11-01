@@ -7,7 +7,7 @@ Public bzl file for exporting implementations.
 ## multitransition.aspect
 
 <pre>
-load("@rules_multitransition//:defs.bzl", "multitransition")
+load("@rules_multitransition//:multitransition.bzl", "multitransition")
 
 multitransition.aspect(*, <a href="#multitransition.aspect-aspect">aspect</a>, <a href="#multitransition.aspect-output_group">output_group</a>)
 </pre>
@@ -32,7 +32,7 @@ An aspect config for `multitransition.transition`.
 ## multitransition.binary
 
 <pre>
-load("@rules_multitransition//:defs.bzl", "multitransition")
+load("@rules_multitransition//:multitransition.bzl", "multitransition")
 
 multitransition.binary(<a href="#multitransition.binary-binary_rule">binary_rule</a>, *, <a href="#multitransition.binary-name">name</a>, <a href="#multitransition.binary-transitions">transitions</a>, <a href="#multitransition.binary-tags">tags</a>, <a href="#multitransition.binary-target_compatible_with">target_compatible_with</a>, <a href="#multitransition.binary-visibility">visibility</a>,
                        <a href="#multitransition.binary-kwargs">**kwargs</a>)
@@ -68,7 +68,7 @@ transition an existing binary, use `alias` as `binary_rule` with `actual`.
 ## multitransition.target
 
 <pre>
-load("@rules_multitransition//:defs.bzl", "multitransition")
+load("@rules_multitransition//:multitransition.bzl", "multitransition")
 
 multitransition.target(<a href="#multitransition.target-rule">rule</a>, *, <a href="#multitransition.target-name">name</a>, <a href="#multitransition.target-transitions">transitions</a>, <a href="#multitransition.target-tags">tags</a>, <a href="#multitransition.target-testonly">testonly</a>, <a href="#multitransition.target-visibility">visibility</a>, <a href="#multitransition.target-kwargs">**kwargs</a>)
 </pre>
@@ -102,7 +102,7 @@ with `actual`.
 ## multitransition.test
 
 <pre>
-load("@rules_multitransition//:defs.bzl", "multitransition")
+load("@rules_multitransition//:multitransition.bzl", "multitransition")
 
 multitransition.test(<a href="#multitransition.test-test_rule">test_rule</a>, *, <a href="#multitransition.test-name">name</a>, <a href="#multitransition.test-transitions">transitions</a>, <a href="#multitransition.test-tags">tags</a>, <a href="#multitransition.test-timeout">timeout</a>, <a href="#multitransition.test-size">size</a>, <a href="#multitransition.test-target_compatible_with">target_compatible_with</a>,
                      <a href="#multitransition.test-visibility">visibility</a>, <a href="#multitransition.test-kwargs">**kwargs</a>)
@@ -138,7 +138,7 @@ To transition an existing test, use `alias` as `test_rule` with `actual`.
 ## multitransition.transition
 
 <pre>
-load("@rules_multitransition//:defs.bzl", "multitransition")
+load("@rules_multitransition//:multitransition.bzl", "multitransition")
 
 multitransition.transition(*, <a href="#multitransition.transition-name">name</a>, <a href="#multitransition.transition-flags">flags</a>, <a href="#multitransition.transition-aspect">aspect</a>, <a href="#multitransition.transition-kwargs">**kwargs</a>)
 </pre>

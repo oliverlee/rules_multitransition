@@ -29,7 +29,7 @@ declarations, e.g. through a macro wrapping `multitransition.test`; dev
 tags are ignored when the module is not the root.
 
 rules_multitransition's own usage is not a dev dependency: it provides the
-`@multitransition_config` repo that `defs.bzl` loads for every user.
+`@multitransition_config` repo that `multitransition.bzl` loads for every user.
 
 <a id="multitransition_config"></a>
 

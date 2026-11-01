@@ -3,8 +3,8 @@ load("@rules_shell//shell:sh_binary.bzl", "sh_binary")
 load("@stardoc//stardoc:stardoc.bzl", "stardoc")
 
 DOCS = [
-    "defs",
     "extensions",
+    "multitransition",
 ]
 
 [
