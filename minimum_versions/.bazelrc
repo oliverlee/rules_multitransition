@@ -1,0 +1,4 @@
+import %workspace%/../.bazelrc
+
+# fail if a dependency resolves above the version requested in MODULE.bazel
+common --check_direct_dependencies=error

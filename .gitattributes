@@ -2,8 +2,10 @@
 .github export-ignore
 .zed export-ignore
 docs export-ignore
+minimum_versions export-ignore
 tools export-ignore
 
 MODULE.bazel.lock linguist-generated
 docs/*.md linguist-generated
 examples/MODULE.bazel.lock linguist-generated
+minimum_versions/MODULE.bazel.lock linguist-generated
