@@ -44,7 +44,7 @@ def multitransition_executable(
       tags: Tags to apply to all targets.
       visibility: Visibility of '<name>' and the variants.
       target_compatible_with: Constraints to apply to all targets.
-      attrs: Attributes to apply to all targets, e.g. 'timeout'.
+      attrs: Attributes to apply unchanged to all targets, e.g. 'timeout'.
       **kwargs: Attributes to pass to 'rule'.
 
     Returns:

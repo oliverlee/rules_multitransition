@@ -1,0 +1,42 @@
+load("@bazel_skylib//rules:native_binary.bzl", "native_test")
+load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_test")
+load("@rules_multitransition//:defs.bzl", "multitransition")
+
+OPT = multitransition.transition(
+    name = "opt",
+    compilation_mode = "opt",
+)
+
+# existing targets, e.g. from another package or repo, that only succeed in
+# the 'opt' transition
+cc_test(
+    name = "existing_test",
+    srcs = ["ndebug.cpp"],
+    tags = ["manual"],
+)
+
+cc_binary(
+    name = "existing_binary",
+    srcs = ["ndebug.cpp"],
+    tags = ["manual"],
+)
+
+multitransition.test(
+    alias,
+    name = "alias_test",
+    actual = ":existing_test",
+    transitions = [OPT],
+)
+
+multitransition.binary(
+    alias,
+    name = "alias_binary",
+    actual = ":existing_binary",
+    transitions = [OPT],
+)
+
+native_test(
+    name = "alias_binary_opt_test",
+    src = ":alias_binary.opt",
+    out = "alias_binary_opt_test.bin",
+)

@@ -55,9 +55,14 @@ def multitransition_test(
         tags = tags,
         visibility = visibility,
         target_compatible_with = target_compatible_with,
+        # only when set, as some rules, e.g. 'alias', don't have them
         attrs = {
-            "size": size,
-            "timeout": timeout,
+            attr: value
+            for attr, value in {
+                "size": size,
+                "timeout": timeout,
+            }.items()
+            if value != None
         },
         **kwargs
     )
