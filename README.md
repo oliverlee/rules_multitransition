@@ -119,7 +119,7 @@ to.
 For `features`, prefix a feature with `-` to disable it. A negative feature
 overrides a positive one, so a variant can disable a feature enabled on the
 command line, but can't enable a feature disabled on the command line. See
-`//examples/features`.
+[`examples/features`](examples/features).
 
 ### Aspects
 
@@ -157,7 +157,7 @@ multitransition.target(
 $ bazel build //:lib_transitioned.clang-tidy-report
 ```
 
-See `//examples/aspect`.
+See [`examples/aspect`](examples/aspect).
 
 ### Running
 
