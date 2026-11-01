@@ -1,5 +1,7 @@
 load("@bazel_skylib//rules:common_settings.bzl", "bool_flag")
 
+# When False, only the underlying '<name>' test of each 'multitransition.test'
+# is compatible. When True, '<name>' is skipped and the variants run.
 bool_flag(
     name = "multitransition_test",
     build_setting_default = True,
@@ -18,6 +20,31 @@ config_setting(
     name = "multitransition_test_disabled",
     flag_values = {
         ":multitransition_test": "False",
+    },
+    visibility = ["//visibility:public"],
+)
+
+# When False, only the underlying '<name>' binary of each
+# 'multitransition.binary' is compatible. When True, '<name>' is skipped and
+# the variants are built.
+bool_flag(
+    name = "multitransition_binary",
+    build_setting_default = True,
+    visibility = ["//visibility:public"],
+)
+
+config_setting(
+    name = "multitransition_binary_enabled",
+    flag_values = {
+        ":multitransition_binary": "True",
+    },
+    visibility = ["//visibility:public"],
+)
+
+config_setting(
+    name = "multitransition_binary_disabled",
+    flag_values = {
+        ":multitransition_binary": "False",
     },
     visibility = ["//visibility:public"],
 )

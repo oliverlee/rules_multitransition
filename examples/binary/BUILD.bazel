@@ -1,0 +1,65 @@
+load("@bazel_skylib//rules:common_settings.bzl", "string_flag")
+load("@bazel_skylib//rules:diff_test.bzl", "diff_test")
+load("@rules_multitransition//:defs.bzl", "multitransition")
+load("@rules_shell//shell:sh_binary.bzl", "sh_binary")
+
+COLORS = [
+    "red",
+    "blue",
+]
+
+string_flag(
+    name = "color",
+    build_setting_default = "none",
+    make_variable = "COLOR",
+)
+
+# a script that prints the value of ':color'
+genrule(
+    name = "app_script",
+    outs = ["app.bash"],
+    cmd = """
+cat > $@ <<'EOF'
+#!/usr/bin/env bash
+echo '$(COLOR)'
+EOF
+""",
+    toolchains = [":color"],
+)
+
+multitransition.binary(
+    sh_binary,
+    name = "app",
+    srcs = [":app_script"],
+    transitions = [
+        multitransition.transition(
+            name = color,
+            flags = {
+                ":color": color,
+            },
+        )
+        for color in COLORS
+    ],
+)
+
+[
+    (
+        genrule(
+            name = color + "_output",
+            outs = [color + ".txt"],
+            cmd = "$(execpath :app.{}) > $@".format(color),
+            tools = [":app." + color],
+        ),
+        genrule(
+            name = color + "_expected",
+            outs = [color + ".expected.txt"],
+            cmd = "echo {} > $@".format(color),
+        ),
+        diff_test(
+            name = "app_{}_test".format(color),
+            file1 = color + ".txt",
+            file2 = color + ".expected.txt",
+        ),
+    )
+    for color in COLORS
+]

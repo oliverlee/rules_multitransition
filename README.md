@@ -128,6 +128,33 @@ overrides a positive one, so a variant can disable a feature enabled on the
 command line, but can't enable a feature disabled on the command line. See
 [`examples/features`](examples/features).
 
+### Binaries
+
+`multitransition.binary` defines a binary with `binary_rule` and a variant for
+each configuration. Each `<name>.<config>` target runs the binary built in that
+configuration:
+
+```bzl
+# BUILD.bazel
+multitransition.binary(
+    cc_binary,
+    name = "app",
+    srcs = ["app.cpp"],
+    transitions = [
+        multitransition.transition(
+            name = "opt",
+            compilation_mode = "opt",
+        ),
+    ],
+)
+```
+
+```sh
+$ bazel run //:app.opt
+```
+
+See [`examples/binary`](examples/binary).
+
 ### Aspects
 
 `multitransition.target` builds a target in each configuration. Each
@@ -188,12 +215,30 @@ $ bazel test \
   //:my_test
 ```
 
+Build only the underlying binary targets
+
+```sh
+$ bazel build \
+  --@rules_multitransition//config:multitransition_binary=False \
+  //...
+```
+
 ## Reference
 
 - [`defs.bzl`](docs/defs.md)
   - `multitransition.test`
+  - `multitransition.binary`
   - `multitransition.target`
   - `multitransition.transition`
   - `multitransition.aspect`
 - [`extensions.bzl`](docs/extensions.md)
   - `multitransition_config`
+- [`config`](config/BUILD.bazel)
+  - `multitransition_test`: When `False`, only the underlying `<name>` test of
+    each `multitransition.test` is compatible, built and run without a
+    transition. Defaults to `True`, which skips `<name>` and runs the
+    variants.
+  - `multitransition_binary`: When `False`, only the underlying `<name>`
+    binary of each `multitransition.binary` is compatible, built without a
+    transition. Defaults to `True`, which skips `<name>` and builds the
+    variants.
