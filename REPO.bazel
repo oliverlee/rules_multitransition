@@ -3,5 +3,4 @@
 
 ignore_directories([
     "**/bazel-*",
-    "test",
 ])

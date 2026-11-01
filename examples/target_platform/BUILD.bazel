@@ -1,7 +1,7 @@
 load("@cortex_m//rules:transitions.bzl", "transition_config_test")
 load("@rules_cc//cc:defs.bzl", "cc_test")
 load("@rules_multitransition//:defs.bzl", "multitransition")
-load("@rules_multitransition_test//:compile_flags_test.bzl", "compile_flags_test")
+load("//test:compile_flags_test.bzl", "compile_flags_test")
 
 # create a base cc_test target
 cc_test(
