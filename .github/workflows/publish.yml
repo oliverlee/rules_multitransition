@@ -1,0 +1,25 @@
+name: publish
+
+on:
+  release:
+    types: [published]
+  # retry a failed publish from the GitHub UI
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        required: true
+        type: string
+
+jobs:
+  publish:
+    uses: bazel-contrib/publish-to-bcr/.github/workflows/publish.yaml@v1.6.0
+    with:
+      tag_name: ${{ inputs.tag_name || github.event.release.tag_name }}
+      registry_fork: oliverlee/bazel-central-registry
+      # attestations need the release archive from bazel-contrib's
+      # 'release_ruleset' workflow; releases use GitHub's source archive
+      attest: false
+    permissions:
+      contents: write
+    secrets:
+      publish_token: ${{ secrets.BCR_PUBLISH_TOKEN }}
