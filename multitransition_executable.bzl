@@ -22,6 +22,7 @@ def multitransition_executable(
         rule,
         transitioned_rule,
         flag,
+        exclusive,
         name,
         transitions,
         tags,
@@ -30,15 +31,17 @@ def multitransition_executable(
         attrs,
         **kwargs):
     """
-    Defines '<name>', '<name>.base', and a variant per transition.
+    Defines '<name>' and a variant per transition.
 
-    With 'flag' enabled, '<name>' is incompatible and each variant transitions
-    '<name>.base'. With 'flag' disabled, only '<name>' is compatible.
+    With 'flag' disabled, only '<name>' is compatible. With 'flag' enabled, the
+    variants are compatible, and if 'exclusive', '<name>' is not: each variant
+    then transitions an internal '<name>.base' instead.
 
     Args:
       rule: The rule creating '<name>' and '<name>.base'.
       transitioned_rule: The rule creating each variant.
       flag: The name of the bool flag in '//config'.
+      exclusive: Whether '<name>' is incompatible when 'flag' is enabled.
       name: The name of the underlying target.
       transitions: A list of 'multitransition.transition'.
       tags: Tags to apply to all targets.
@@ -54,17 +57,22 @@ def multitransition_executable(
         name = name,
         tags = tags,
         visibility = visibility,
-        target_compatible_with = target_compatible_with + _compatible_when(flag, False),
+        target_compatible_with = target_compatible_with + (
+            _compatible_when(flag, False) if exclusive else []
+        ),
         **(attrs | kwargs)
     )
 
-    rule(
-        name = name + ".base",
-        tags = tags if "manual" in tags else tags + ["manual"],
-        visibility = ["//visibility:private"],
-        target_compatible_with = target_compatible_with + _compatible_when(flag, True),
-        **(attrs | kwargs)
-    )
+    src = name
+    if exclusive:
+        src = name + ".base"
+        rule(
+            name = src,
+            tags = tags if "manual" in tags else tags + ["manual"],
+            visibility = ["//visibility:private"],
+            target_compatible_with = target_compatible_with + _compatible_when(flag, True),
+            **(attrs | kwargs)
+        )
 
     variants = []
     for i, config in enumerate(transitions):
@@ -77,7 +85,7 @@ def multitransition_executable(
         variants.append(variant)
         transitioned_rule(
             name = variant,
-            src = name + ".base",
+            src = src,
             options = transition_options(config),
             tags = tags,
             visibility = visibility,

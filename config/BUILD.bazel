@@ -24,9 +24,8 @@ config_setting(
     visibility = ["//visibility:public"],
 )
 
-# When False, only the underlying '<name>' binary of each
-# 'multitransition.binary' is compatible. When True, '<name>' is skipped and
-# the variants are built.
+# When False, the variants of each 'multitransition.binary' are incompatible,
+# leaving only the underlying '<name>' binary. '<name>' is always compatible.
 bool_flag(
     name = "multitransition_binary",
     build_setting_default = True,

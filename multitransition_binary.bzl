@@ -21,9 +21,10 @@ def multitransition_binary(
 
     Creates a binary target along with binary target variants, with one
     variant per item in `transitions`. Each `<name>.<config name>` variant
-    runs the binary built in that transition with `bazel run`. With
-    `--@rules_multitransition//config:multitransition_binary=False`, only the
-    underlying binary target is compatible, built without a transition.
+    runs the binary built in that transition with `bazel run`. The underlying
+    binary target is always compatible. With
+    `--@rules_multitransition//config:multitransition_binary=False`, the
+    variants are incompatible, leaving only the underlying binary target.
 
     Args:
       binary_rule: **rule**
@@ -45,6 +46,7 @@ def multitransition_binary(
         rule = binary_rule,
         transitioned_rule = transitioned_binary,
         flag = "multitransition_binary",
+        exclusive = False,
         name = name,
         transitions = transitions,
         tags = tags,
