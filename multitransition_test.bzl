@@ -25,6 +25,7 @@ def multitransition_test(
         timeout = None,
         size = None,
         target_compatible_with = [],
+        visibility = None,
         **kwargs):
     """
     Defines a test and additional variants using the specified transitions.
@@ -50,6 +51,8 @@ def multitransition_test(
           Applies to all test targets.
       target_compatible_with: **list of labels**
           Applies to all test targets.
+      visibility: **list of labels**
+          Visibility of the test, its variants, and the `test_suite`.
       **kwargs: Additional attributes to pass to the test rule.
     """
     tags_with_manual = _append_if_missing(tags, "manual")
@@ -59,6 +62,7 @@ def multitransition_test(
         tags = tags,
         timeout = timeout,
         size = size,
+        visibility = visibility,
         target_compatible_with = target_compatible_with + select({
             Label("//config:multitransition_test_enabled"): [
                 Label("@platforms//:incompatible"),
@@ -73,6 +77,7 @@ def multitransition_test(
         tags = tags_with_manual,
         timeout = timeout,
         size = size,
+        visibility = ["//visibility:private"],
         target_compatible_with = target_compatible_with + select({
             Label("//config:multitransition_test_enabled"): [],
             Label("//config:multitransition_test_disabled"): [
@@ -98,6 +103,7 @@ def multitransition_test(
             tags = tags,
             timeout = timeout,
             size = size,
+            visibility = visibility,
             target_compatible_with = target_compatible_with + select({
                 Label("//config:multitransition_test_enabled"): [],
                 Label("//config:multitransition_test_disabled"): [
@@ -110,4 +116,5 @@ def multitransition_test(
         name = name + ".suite",
         tests = tests,
         tags = tags_with_manual,
+        visibility = visibility,
     )

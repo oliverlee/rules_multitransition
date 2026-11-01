@@ -95,7 +95,7 @@ transition sets `aspect`, the aspect is applied to `src` instead and its
 load("@rules_multitransition//:defs.bzl", "multitransition")
 
 multitransition.test(<a href="#multitransition.test-test_rule">test_rule</a>, *, <a href="#multitransition.test-name">name</a>, <a href="#multitransition.test-transitions">transitions</a>, <a href="#multitransition.test-tags">tags</a>, <a href="#multitransition.test-timeout">timeout</a>, <a href="#multitransition.test-size">size</a>, <a href="#multitransition.test-target_compatible_with">target_compatible_with</a>,
-                     <a href="#multitransition.test-kwargs">**kwargs</a>)
+                     <a href="#multitransition.test-visibility">visibility</a>, <a href="#multitransition.test-kwargs">**kwargs</a>)
 </pre>
 
 Defines a test and additional variants using the specified transitions.
@@ -118,6 +118,7 @@ only the underlying test target is compatible, built without a transition.
 | <a id="multitransition.test-timeout"></a>timeout |  **string** Applies to all test targets.   |  `None` |
 | <a id="multitransition.test-size"></a>size |  **string** Applies to all test targets.   |  `None` |
 | <a id="multitransition.test-target_compatible_with"></a>target_compatible_with |  **list of labels** Applies to all test targets.   |  `[]` |
+| <a id="multitransition.test-visibility"></a>visibility |  **list of labels** Visibility of the test, its variants, and the `test_suite`.   |  `None` |
 | <a id="multitransition.test-kwargs"></a>kwargs |  Additional attributes to pass to the test rule.   |  none |
 
 
