@@ -28,9 +28,12 @@ common:no_nix --deleted_packages=target_compatible_with
 common:no_nix --deleted_packages=target_platform
 common:no_nix --deleted_packages=target_platform_with_custom_flag
 
-# Bazel 7: skip the 'cortex_m' examples, which also require Bazel 8, and fix
-# conflicting actions in 'examples/aspect'
+# skip the 'cortex_m' examplesa require Bazel 8
 common:bazel7 --config=no_nix
+# fix conflicting actions in 'examples/aspect'
 common:bazel7 --experimental_retain_test_configuration_across_testonly
+# allow the space in a file name of the Python toolchain in the runfiles of
+# 'examples/python'
+common:bazel7 --experimental_inprocess_symlink_creation
 
 try-import %workspace%/user.bazelrc

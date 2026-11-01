@@ -1,12 +1,14 @@
 """
 The transition and the transitioned target, binary, and test rules.
 
-The transition can set the options in `OPTIONS`, which the
-`multitransition_config` module extension generates from the declarations in
-the module graph.
+The transition can set the options in `OPTIONS`, and the rules forward the
+providers in `PROVIDERS` in addition to the built-in ones. The
+`multitransition_config` module extension generates both from the declarations
+in the module graph.
 """
 
 load("@multitransition_config//:options.bzl", _OPTIONS = "OPTIONS")
+load("@multitransition_config//:providers.bzl", _PROVIDERS = "PROVIDERS")
 load("@rules_cc//cc/common:cc_info.bzl", "CcInfo")
 load("@rules_cc//cc/common:debug_package_info.bzl", "DebugPackageInfo")
 
@@ -65,11 +67,18 @@ def _transition_impl(settings, attr):
         for option, values in attr.options.items()
     }
 
-_FORWARDED_PROVIDERS = [
+_BUILTIN_PROVIDERS = [
     CcInfo,
     DebugPackageInfo,
     OutputGroupInfo,
     InstrumentedFilesInfo,
+]
+
+# a declared provider may also be built in, e.g. 'CcInfo'
+_FORWARDED_PROVIDERS = _BUILTIN_PROVIDERS + [
+    provider
+    for provider in _PROVIDERS
+    if provider not in _BUILTIN_PROVIDERS
 ]
 
 def _forwarded_providers(target):

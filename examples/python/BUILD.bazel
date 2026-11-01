@@ -1,0 +1,34 @@
+load("@rules_multitransition//:multitransition.bzl", "multitransition")
+load("@rules_python//python:py_library.bzl", "py_library")
+load("@rules_python//python:py_test.bzl", "py_test")
+
+# a module whose contents depend on the configuration it's generated in
+genrule(
+    name = "build_config_py",
+    outs = ["build_config.py"],
+    cmd = """
+echo 'COMPILATION_MODE = "$(COMPILATION_MODE)"' > $@
+""",
+)
+
+# 'PyInfo' is declared with the 'multitransition_config' module extension in
+# MODULE.bazel: the variants forward it, which 'deps' of 'py_test' requires.
+multitransition.target(
+    py_library,
+    name = "build_config",
+    srcs = [":build_config_py"],
+    imports = ["."],
+    transitions = [
+        multitransition.transition(
+            name = "opt",
+            compilation_mode = "opt",
+        ),
+    ],
+)
+
+py_test(
+    name = "build_config_test",
+    srcs = ["build_config_test.py"],
+    legacy_create_init = 0,
+    deps = [":build_config.opt"],
+)

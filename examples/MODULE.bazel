@@ -22,6 +22,12 @@ bazel_dep(
     dev_dependency = True,
 )
 bazel_dep(
+    name = "rules_python",
+    # 2.3.0 and later use 'flag_alias', which requires Bazel 7.7.0 or 8.5.0
+    version = "2.2.0",
+    dev_dependency = True,
+)
+bazel_dep(
     name = "rules_shell",
     version = "0.8.0",
     dev_dependency = True,
@@ -76,12 +82,14 @@ multitransition_config = use_extension(
     dev_dependency = True,
 )
 multitransition_config.extend(
-    # //aspect
+    # used by //aspect
     aspects = ["//test:transitive_source_files.bzl%transitive_source_files"],
     flags = [
-        # //binary
+        # used by //binary
         "//binary:color",
-        # //target_platform_with_custom_flag
+        # used by //target_platform_with_custom_flag
         "@cortex_m//config:semihosting",
     ],
+    # used by //python
+    providers = ["@rules_python//python:py_info.bzl%PyInfo"],
 )
