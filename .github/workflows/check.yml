@@ -68,6 +68,72 @@ jobs:
       - run: |
           bazel run //tools:buildifier
 
+  bcr-presubmit-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      bazel: ${{ steps.read.outputs.bazel }}
+      incompatible-flags: ${{ steps.read.outputs.incompatible-flags }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: read
+        run: |
+          echo "bazel=$(yq -o=json -I=0 '.bcr_test_module.matrix.bazel' .bcr/presubmit.yml)" >> "$GITHUB_OUTPUT"
+          # BCR presubmit tests each flag with the versions of Bazel listed
+          # for it; test all flags with every version to catch them early
+          curl -fsSL -o "$RUNNER_TEMP/incompatible_flags.yml" \
+            https://raw.githubusercontent.com/bazelbuild/bazel-central-registry/main/incompatible_flags.yml
+          echo "incompatible-flags=$(yq -o=json -I=0 '.incompatible_flags | keys' "$RUNNER_TEMP/incompatible_flags.yml")" >> "$GITHUB_OUTPUT"
+
+  # Runs 'run_test_module_ubuntu' from '.bcr/presubmit.yml' in the image Bazel
+  # CI uses for its platform, as the user and home directory Bazel CI uses.
+  bcr-presubmit-nix:
+    needs: bcr-presubmit-matrix
+    strategy:
+      fail-fast: false
+      matrix:
+        bazel: ${{ fromJSON(needs.bcr-presubmit-matrix.outputs.bazel) }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - shell: bash
+        env:
+          INCOMPATIBLE_FLAGS: ${{ needs.bcr-presubmit-matrix.outputs.incompatible-flags }}
+        run: |
+          module='.bcr_test_module'
+          task="$module.tasks.run_test_module_ubuntu"
+          read_presubmit() { yq "$1" .bcr/presubmit.yml; }
+
+          env_args=()
+          while IFS= read -r kv; do
+            env_args+=(-e "$kv")
+          done < <(read_presubmit "$task.environment | to_entries | .[] | .key + \"=\" + .value")
+
+          # like bazelci.py, run the shell commands with `sh` after `set -e`
+          # https://github.com/bazelbuild/continuous-integration/blob/f1ef56a79740d19e76e0cab3db23064603fa02ad/buildkite/bazelci.py#L2196
+          {
+            echo 'set -ex'
+            read_presubmit "$task.shell_commands[]"
+            # like bazelci.py, force color: the container has no terminal
+            echo "bazel test --color=yes $(read_presubmit "$task.test_flags[] | @sh" | tr '\n' ' ')" \
+              "$(yq '.[] | @sh' <<< "$INCOMPATIBLE_FLAGS" | tr '\n' ' ') --" \
+              "$(read_presubmit "$task.test_targets[] | @sh" | tr '\n' ' ')"
+          } | tee "$RUNNER_TEMP/presubmit.sh"
+
+          mkdir -p "$RUNNER_TEMP/nix" "$RUNNER_TEMP/home"
+          docker run --rm \
+            -u "$(id -u):$(id -g)" \
+            -e USER=buildkite-agent \
+            -e HOME=/var/lib/buildkite-agent \
+            -e USE_BAZEL_VERSION=${{ matrix.bazel }} \
+            "${env_args[@]}" \
+            -v "$RUNNER_TEMP/nix:/nix" \
+            -v "$RUNNER_TEMP/home:/var/lib/buildkite-agent" \
+            -v "$RUNNER_TEMP/presubmit.sh:/presubmit.sh:ro" \
+            -v "$PWD:/src" \
+            -w "/src/$(read_presubmit "$module.module_path")" \
+            "gcr.io/bazel-public/$(read_presubmit "$task.platform")" \
+            sh /presubmit.sh
+
   # https://emmer.dev/blog/skippable-github-status-checks-aren-t-really-required/
   # https://github.com/marketplace/actions/alls-green
   all:
@@ -77,6 +143,7 @@ jobs:
       - test
       - integration-tests
       - buildifier
+      - bcr-presubmit-nix
     steps:
       - uses: Kesin11/actions-timeline@v2
       - uses: re-actors/alls-green@release/v1
