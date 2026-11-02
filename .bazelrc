@@ -28,7 +28,7 @@ common:no_nix --deleted_packages=target_compatible_with
 common:no_nix --deleted_packages=target_platform
 common:no_nix --deleted_packages=target_platform_with_custom_flag
 
-# skip the 'cortex_m' examplesa require Bazel 8
+# skip the 'cortex_m' examples as they require Bazel 8
 common:bazel7 --config=no_nix
 # fix conflicting actions in 'examples/aspect'
 common:bazel7 --experimental_retain_test_configuration_across_testonly

@@ -23,7 +23,7 @@ jobs:
         with:
           buildbuddy-api-key: ${{ secrets.BUILDBUDDY_API_KEY }}
       - run: |
-          bazel test //...
+          bazel test -- //... -//test/...
 
   examples:
     strategy:
@@ -33,31 +33,18 @@ jobs:
           - "ubuntu-latest"
           - "macos-latest"
         bazel:
-          - "" # pinned in .bazeliskrc
+          - "pinned"
           - "7.1.0"
           - "8.x"
           - "9.x"
-        include:
-          - bazel: "7.1.0"
-            flags: "--lockfile_mode=off --config=bazel7"
-          - bazel: "8.x"
-            flags: "--lockfile_mode=off"
-          - bazel: "9.x"
-            flags: "--lockfile_mode=off"
     runs-on: ${{ matrix.os }}
-    env:
-      USE_BAZEL_VERSION: ${{ matrix.bazel }}
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/ci-env-setup
         with:
           buildbuddy-api-key: ${{ secrets.BUILDBUDDY_API_KEY }}
-      # test the release archive, which the BCR presubmit uses
       - run: |
-          git archive --prefix=archive/ HEAD | tar x -C "$RUNNER_TEMP"
-      - working-directory: ${{ runner.temp }}/archive/examples
-        run: |
-          bazel test ${{ matrix.flags }} //...
+          bazel test //test:examples_bazel_${{ matrix.bazel }}
 
   minimum-versions:
     strategy:

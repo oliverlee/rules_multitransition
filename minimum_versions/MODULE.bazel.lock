@@ -14,7 +14,7 @@
   },
   "localOverrideHashes": {
     "bazel_tools": "1ae69322ac3823527337acf02016e8ee95813d8d356f47060255b8956fa642f0",
-    "rules_multitransition": "18d183d1e949718f277312c3056b419e9296ff24c9403515d92eecb3903b8f49"
+    "rules_multitransition": "bf3b68698d528c748479a83484b54441c88931ae59e1ba2145a5509b59e6f1db"
   },
   "moduleDepGraph": {
     "<root>": {
@@ -183,6 +183,21 @@
           "tags": [],
           "hasDevUseExtension": false,
           "hasNonDevUseExtension": true
+        },
+        {
+          "extensionBzlFile": "//:MODULE.bazel",
+          "extensionName": "_repo_rules",
+          "usingModule": "rules_multitransition@_",
+          "location": {
+            "file": "@@rules_multitransition~//:MODULE.bazel",
+            "line": 0,
+            "column": 0
+          },
+          "imports": {},
+          "devImports": [],
+          "tags": [],
+          "hasDevUseExtension": false,
+          "hasNonDevUseExtension": false
         }
       ],
       "deps": {
