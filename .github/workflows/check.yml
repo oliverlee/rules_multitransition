@@ -25,18 +25,28 @@ jobs:
       - run: |
           bazel test -- //... -//test/...
 
-  examples:
+  integration-test-targets:
+    runs-on: ubuntu-latest
+    outputs:
+      tests: ${{ steps.query.outputs.tests }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/ci-env-setup
+        with:
+          buildbuddy-api-key: ${{ secrets.BUILDBUDDY_API_KEY }}
+      - id: query
+        run: |
+          echo "tests=$(bazel query 'tests(//test/...)' | jq -R -s -c 'split("\n")[:-1]')" >> "$GITHUB_OUTPUT"
+
+  integration-tests:
+    needs: integration-test-targets
     strategy:
       fail-fast: false
       matrix:
         os:
           - "ubuntu-latest"
           - "macos-latest"
-        bazel:
-          - "pinned"
-          - "7.1.0"
-          - "8.x"
-          - "9.x"
+        test: ${{ fromJSON(needs.integration-test-targets.outputs.tests) }}
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -44,7 +54,7 @@ jobs:
         with:
           buildbuddy-api-key: ${{ secrets.BUILDBUDDY_API_KEY }}
       - run: |
-          bazel test //test:examples_bazel_${{ matrix.bazel }}
+          bazel test --test_output=streamed ${{ matrix.test }}
 
   minimum-versions:
     strategy:
@@ -80,7 +90,7 @@ jobs:
     if: always()
     needs:
       - test
-      - examples
+      - integration-tests
       - minimum-versions
       - buildifier
     steps:
