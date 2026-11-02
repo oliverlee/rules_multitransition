@@ -4,6 +4,10 @@ common --repo_env=BAZEL_USE_XCODE_TOOLCHAIN=0
 
 common --lockfile_mode=error
 
+# don't warn when a dependency resolves above the version requested in
+# MODULE.bazel
+common --check_direct_dependencies=off
+
 build:remote-cache --bes_results_url=https://oliverlee.buildbuddy.io/invocation/
 build:remote-cache --bes_backend=grpcs://oliverlee.buildbuddy.io
 build:remote-cache --bes_upload_mode=fully_async

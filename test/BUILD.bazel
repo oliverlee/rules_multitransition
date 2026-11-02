@@ -1,25 +1,22 @@
 load("@bazel_binaries//:defs.bzl", "bazel_binaries")
 load("@rules_shell//shell:sh_binary.bzl", "sh_binary")
 load(":bazel_integration_test.bzl", "bazel_integration_test")
+load(":bazel_versions.bzl", "BAZEL_VERSIONS")
 
 sh_binary(
     name = "setup",
     srcs = ["setup.bash"],
+    visibility = ["//test:__subpackages__"],
 )
 
 [
     bazel_integration_test(
-        name = "examples_bazel_" + version,
+        name = "examples_bazel_" + bazel["version"],
         bazel_binary = bazel_binaries.label(
-            bazel_binaries.versions.current if version == "pinned" else version,
+            bazel_binaries.versions.current if bazel["version"] == "pinned" else bazel["version"],
         ),
-        env = {"BAZEL_TEST_OPTS": " ".join(flags)},
+        env = {"BAZEL_TEST_OPTS": " ".join(bazel["flags"])},
         runner = "examples.bash",
     )
-    for version, flags in [
-        ("pinned", []),
-        ("7.1.0", ["--lockfile_mode=off", "--config=bazel7"]),
-        ("8.x", ["--lockfile_mode=off"]),
-        ("9.x", ["--lockfile_mode=off"]),
-    ]
+    for bazel in BAZEL_VERSIONS
 ]
