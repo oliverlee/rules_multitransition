@@ -1,9 +1,9 @@
-.bcr export-ignore
-.github export-ignore
-.zed export-ignore
-docs export-ignore
-minimum_versions export-ignore
-tools export-ignore
+/.bcr export-ignore
+/.github export-ignore
+/.zed export-ignore
+/docs export-ignore
+/minimum_versions export-ignore
+/tools export-ignore
 
 MODULE.bazel.lock linguist-generated
 docs/*.md linguist-generated
