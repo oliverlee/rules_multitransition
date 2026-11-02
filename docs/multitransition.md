@@ -77,10 +77,12 @@ Defines a target and additional variants using the specified transitions.
 
 Creates a target along with target variants, with one variant per item in
 `transitions`. Each `<name>.<config name>` variant forwards the providers of
-the target built in that transition. If the transition sets `aspect`, the
-aspect is applied to the target instead and its `output_group` is the
-default output. To transition an existing target, use `alias` as `rule`
-with `actual`.
+the target built in that transition: `CcInfo`, `DebugPackageInfo`,
+`InstrumentedFilesInfo`, `OutputGroupInfo`, and the providers declared with
+the `multitransition_config` module extension. If the transition sets
+`aspect`, the aspect is applied to the target instead and its
+`output_group` is the default output. To transition an existing target, use
+`alias` as `rule` with `actual`.
 
 
 **PARAMETERS**

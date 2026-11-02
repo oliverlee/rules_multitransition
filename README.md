@@ -80,9 +80,10 @@ overrides a positive one: a configuration can disable a feature enabled on the
 command line, but can't enable one disabled there.
 
 Other native options and Starlark build settings must be declared first (see
-[Declaring options and aspects](#declaring-options-and-aspects)). Set them in
-`flags`, with `//command_line_option:<name>` or the build setting's label as
-the key:
+[Declaring flags, aspects, and
+providers](#declaring-flags-aspects-and-providers)).
+Set them in `flags`, with `//command_line_option:<name>` or the build
+setting's label as the key:
 
 ```bzl
 multitransition.transition(
@@ -142,6 +143,15 @@ binary: `bazel run //:app` runs it without any transition.
 the providers of the target built in that configuration. `<name>` is an
 ordinary target that others can depend on.
 
+The variants forward `CcInfo`, `DebugPackageInfo`, `InstrumentedFilesInfo`,
+and `OutputGroupInfo`. The variants of `multitransition.test` and
+`multitransition.binary` also forward `RunEnvironmentInfo`. A rule can't
+enumerate the providers of a target (see
+[bazelbuild/bazel#27123](https://github.com/bazelbuild/bazel/issues/27123)).
+Other providers, e.g. `PyInfo` or your own, must be declared (see
+[Declaring flags, aspects, and
+providers](#declaring-flags-aspects-and-providers)).
+
 A configuration may also apply an aspect with `multitransition.aspect`. The
 default output of that variant is then the aspect's `output_group`:
 
@@ -190,7 +200,8 @@ second configuration with the same output directory. Pass
 options for `testonly` targets.
 
 The aspect must be declared (see
-[Declaring options and aspects](#declaring-options-and-aspects)).
+[Declaring flags, aspects, and
+providers](#declaring-flags-aspects-and-providers)).
 
 ### Existing targets
 
@@ -244,11 +255,12 @@ def cc_multi_test(*, transitions = TRANSITIONS, **kwargs):
     multitransition.test(cc_test, transitions = transitions, **kwargs)
 ```
 
-## Declaring options and aspects
+## Declaring flags, aspects, and providers
 
-Native options other than those listed above, Starlark build settings, and
-aspects must be declared in `MODULE.bazel`. Declarations from all modules in
-the dependency graph are combined:
+Native options other than those listed above, Starlark build settings,
+aspects, and providers to forward other than the built-in ones must be
+declared in `MODULE.bazel`. Declarations from all modules in the dependency
+graph are combined:
 
 ```bzl
 # MODULE.bazel
@@ -266,6 +278,9 @@ multitransition_config.extend(
     ],
     flags = [
         "@cortex_m//config:semihosting",
+    ],
+    providers = [
+        "@rules_python//python:py_info.bzl%PyInfo",
     ],
 )
 ```
@@ -287,8 +302,12 @@ build and run without any transition:
   always compatible. Defaults to `True`, which builds the variants too.
 
 ```sh
-$ bazel test --@rules_multitransition//config:multitransition_test=False //:my_test
-$ bazel build --@rules_multitransition//config:multitransition_binary=False //...
+$ bazel test \
+    --@rules_multitransition//config:multitransition_test=False \
+    //:my_test
+$ bazel build \
+    --@rules_multitransition//config:multitransition_binary=False \
+    //...
 ```
 
 ## Reference

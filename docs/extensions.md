@@ -1,7 +1,8 @@
 <!-- Generated with Stardoc: http://skydoc.bazel.build -->
 
-Module extension that declares which options transitions may set and which
-aspects `multitransition.target` may apply.
+Module extension that declares which options transitions may set, which
+aspects `multitransition.target` may apply, and which additional providers the
+variants forward.
 
 ```bzl
 # MODULE.bazel
@@ -20,6 +21,9 @@ multitransition_config.extend(
     flags = [
         "@cortex_m//config:semihosting",
     ],
+    providers = [
+        "@rules_python//python:py_info.bzl%PyInfo",
+    ],
 )
 ```
 
@@ -37,7 +41,7 @@ rules_multitransition's own usage is not a dev dependency: it provides the
 
 <pre>
 multitransition_config = use_extension("@rules_multitransition//:extensions.bzl", "multitransition_config")
-multitransition_config.extend(<a href="#multitransition_config.extend-aspects">aspects</a>, <a href="#multitransition_config.extend-command_line_options">command_line_options</a>, <a href="#multitransition_config.extend-flags">flags</a>)
+multitransition_config.extend(<a href="#multitransition_config.extend-aspects">aspects</a>, <a href="#multitransition_config.extend-command_line_options">command_line_options</a>, <a href="#multitransition_config.extend-flags">flags</a>, <a href="#multitransition_config.extend-providers">providers</a>)
 </pre>
 
 
@@ -47,7 +51,7 @@ multitransition_config.extend(<a href="#multitransition_config.extend-aspects">a
 
 ### extend
 
-Extends the options transitions may set and the aspects `multitransition.target` may apply.
+Extends the options transitions may set, the aspects `multitransition.target` may apply, and the providers the variants forward.
 
 **Attributes**
 
@@ -56,5 +60,6 @@ Extends the options transitions may set and the aspects `multitransition.target`
 | <a id="multitransition_config.extend-aspects"></a>aspects |  Aspects `multitransition.target` may apply, as `<bzl file>%<name>`, e.g. `@rules_clang_tidy//:aspects.bzl%check`.   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
 | <a id="multitransition_config.extend-command_line_options"></a>command_line_options |  Native options `multitransition.transition` may set, without leading dashes, e.g. `conlyopt`.   | List of strings | optional |  `[]`  |
 | <a id="multitransition_config.extend-flags"></a>flags |  Starlark build settings `multitransition.transition` may set, e.g. a `bool_flag`.   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
+| <a id="multitransition_config.extend-providers"></a>providers |  Providers the variants forward in addition to the built-in ones, as `<bzl file>%<name>`, e.g. `@rules_python//python:py_info.bzl%PyInfo`.   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
 
 
