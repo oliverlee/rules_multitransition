@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 #
-# Runs `bazel test //...` in 'examples/' of the archive of the working tree in
-# '$ARCHIVE', like the release archive that the BCR presubmit tests. The output
-# base is in the output base of the outer Bazel and persists across runs.
-#
-# Arguments, e.g. from `--test_arg`, replace the target pattern `//...`.
+# Runs '$RUNNER' in the archive of the working tree in '$ARCHIVE', like the
+# release archive that the BCR presubmit tests. The output base of the inner
+# Bazel is in the output base of the outer Bazel and persists across runs.
 
 set -euo pipefail
 
@@ -28,10 +26,6 @@ else
 fi
 export BIT_STARTUP_OPTIONS="--output_base=$dir/output_base"
 
-if (($# == 0)); then
-  set -- //...
-fi
-
-cd "$dir/src/examples"
-# shellcheck disable=SC2086
-exec "$BIT_BAZEL_BINARY" test --color=yes --curses=no $BAZEL_TEST_OPTS "$@"
+runner="$RUNFILES_DIR/$RUNNER"
+cd "$dir/src"
+exec "$runner" "$@"

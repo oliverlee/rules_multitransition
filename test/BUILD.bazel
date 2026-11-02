@@ -1,52 +1,20 @@
 load("@bazel_binaries//:defs.bzl", "bazel_binaries")
-load("@local_config_bazel//:paths.bzl", "OUTPUT_BASE", "WORKSPACE_ROOT")
-load(
-    "@rules_bazel_integration_test//bazel_integration_test:defs.bzl",
-    "bazel_integration_test",
-)
 load("@rules_shell//shell:sh_binary.bzl", "sh_binary")
+load(":bazel_integration_test.bzl", "bazel_integration_test")
 
 sh_binary(
-    name = "runner",
-    srcs = ["runner.bash"],
+    name = "setup",
+    srcs = ["setup.bash"],
 )
 
 [
     bazel_integration_test(
         name = "examples_bazel_" + version,
-        # The values of these variables differ between machines and are part of
-        # the cache key of this test. The actions of the inner Bazel are still
-        # shared through the remote cache.
-        additional_env_inherit = [
-            # tools that the examples find on 'PATH', e.g. 'nix' for 'cortex_m'
-            "PATH",
-            # caches of Bazel and bazelisk
-            "HOME",
-        ] + select({
-            "@platforms//os:macos": [
-                # the CA certificates for 'nix', which installers set on macOS
-                "NIX_SSL_CERT_FILE",
-            ],
-            "//conditions:default": [
-                # the cache of bazelisk
-                "XDG_CACHE_HOME",
-            ],
-        }),
         bazel_binary = bazel_binaries.label(
             bazel_binaries.versions.current if version == "pinned" else version,
         ),
-        data = ["@git_archive//:archive.tar"],
-        env = {
-            "ARCHIVE": "$(rlocationpath @git_archive//:archive.tar)",
-            "BAZEL_OUTPUT_BASE": OUTPUT_BASE,
-            "BAZEL_WORKSPACE_ROOT": WORKSPACE_ROOT,
-            "BAZEL_TEST_OPTS": " ".join(flags),
-        },
-        tags = [
-            "no-sandbox",
-            "requires-network",
-        ],
-        test_runner = ":runner",
+        env = {"BAZEL_TEST_OPTS": " ".join(flags)},
+        runner = "examples.bash",
     )
     for version, flags in [
         ("pinned", []),
