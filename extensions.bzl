@@ -59,8 +59,8 @@ _BUILD = """\
 load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
 
 bzl_library(
-    name = "defs",
-    srcs = ["defs.bzl"],
+    name = "options",
+    srcs = ["options.bzl"],
     visibility = ["//visibility:public"],
 )
 
@@ -109,7 +109,7 @@ def _options_repo_impl(rctx):
         ),
     )
     rctx.file(
-        "defs.bzl",
+        "options.bzl",
         content = _OPTIONS_BZL.format(options = repr(rctx.attr.options)),
     )
 

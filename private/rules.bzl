@@ -6,7 +6,7 @@ The transition can set the options in `OPTIONS`, which the
 the module graph.
 """
 
-load("@multitransition_config//:defs.bzl", _OPTIONS = "OPTIONS")
+load("@multitransition_config//:options.bzl", _OPTIONS = "OPTIONS")
 load("@rules_cc//cc/common:cc_info.bzl", "CcInfo")
 load("@rules_cc//cc/common:debug_package_info.bzl", "DebugPackageInfo")
 
