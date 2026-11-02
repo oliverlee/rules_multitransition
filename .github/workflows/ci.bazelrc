@@ -9,6 +9,7 @@ build --verbose_failures
 
 build:remote-cache --remote_upload_local_results=true
 build:remote-cache --remote_instance_name=ci-runner-rules_multitransition-0
+build:remote-cache --bes_upload_mode=wait_for_upload_complete
 build --config=remote-cache
 
 test --test_output=errors
