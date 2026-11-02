@@ -1,0 +1,46 @@
+load("@bazel_binaries//:defs.bzl", "bazel_binaries")
+load("//test:bazel_integration_test.bzl", "bazel_integration_test")
+load("//test:bazel_versions.bzl", "BAZEL_VERSIONS")
+
+genrule(
+    name = "deps",
+    srcs = ["//:MODULE.bazel"],
+    outs = ["deps.MODULE.bazel"],
+    # 'print' writes '(missing)' for an attribute that isn't set
+    cmd = """
+$(execpath @buildifier_prebuilt//:buildozer) \\
+  'print name version dev_dependency' \\
+  -:%bazel_dep < $< |
+while read -r name version dev_dependency; do
+  if [[ "$$dev_dependency" != True ]]; then
+    echo "bazel_dep(name = \\"$$name\\", version = \\"$$version\\")"
+  fi
+done > $@
+""",
+    tools = ["@buildifier_prebuilt//:buildozer"],
+)
+
+genrule(
+    name = "module",
+    srcs = [":deps"],
+    outs = ["MODULE.bazel"],
+    cmd = """
+cat $< - > $@ <<'EOF'
+bazel_dep(name = "rules_multitransition")
+local_path_override(
+    module_name = "rules_multitransition",
+    path = "..",
+)
+EOF
+""",
+)
+
+bazel_integration_test(
+    name = "minimum_versions",
+    bazel_binary = bazel_binaries.label(BAZEL_VERSIONS[0]["version"]),
+    data = [":module"],
+    env = {
+        "MODULE_FILE": "$(rlocationpath :module)",
+    },
+    runner = "runner.bash",
+)

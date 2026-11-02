@@ -8,13 +8,14 @@ load(
     _bazel_integration_test = "bazel_integration_test",
 )
 
-visibility("private")
+visibility(["//test/..."])
 
 def bazel_integration_test(
         *,
         name,
         bazel_binary,
         runner,
+        data = [],
         env = {}):
     """
     Runs a script with Bazel in the archive of the working tree.
@@ -30,6 +31,8 @@ def bazel_integration_test(
         the inner Bazel, from `bazel_binaries.label`
       runner: **label**
         the script that runs the inner Bazel in `$BIT_BAZEL_BINARY`
+      data: **list[label]**
+        additional runfiles of `runner`
       env: **dict[str, str]**
         additional environment variables of `runner`
     """
@@ -54,7 +57,7 @@ def bazel_integration_test(
             ],
         }),
         bazel_binary = bazel_binary,
-        data = [
+        data = data + [
             runner,
             "@git_archive//:archive.tar",
         ],

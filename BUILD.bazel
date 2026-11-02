@@ -8,6 +8,11 @@ exports_files(
     visibility = ["//docs:__pkg__"],
 )
 
+exports_files(
+    ["MODULE.bazel"],
+    visibility = ["//test/minimum_versions:__pkg__"],
+)
+
 bzl_library(
     name = "multitransition",
     srcs = [
