@@ -27,7 +27,12 @@ if [[ "$OSTYPE" == darwin* ]]; then
 else
   export BAZELISK_HOME="${XDG_CACHE_HOME:-$HOME/.cache}/bazelisk"
 fi
-export BIT_STARTUP_OPTIONS="--output_base=$dir/output_base"
+
+# Inside a test, Bazel defaults the output user root, with the install base and
+# the repository cache, to '$TEST_TMPDIR', which Bazel clears between runs.
+export BIT_STARTUP_OPTIONS="\
+  --output_user_root=$BAZEL_OUTPUT_BASE/examples_test/output_user_root \
+  --output_base=$dir/output_base"
 
 runner="$RUNFILES_DIR/$RUNNER"
 cd "$dir/src"
