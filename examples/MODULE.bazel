@@ -71,6 +71,18 @@ bazel_dep(
     for commit in ["6895733b87d3a75a40056b12c3d6628bc6945011"]
 ]
 
+# The xpack build is a '.tar.gz', which Bazel extracts faster than the
+# '.tar.xz' of ARM. The extension selects the lowest version of all modules,
+# compares versions without the '-1.1' suffix, and selects the first of equal
+# versions, which is the version of the root module over '13.2.1' of
+# 'cortex_m'.
+arm_toolchain = use_extension(
+    "@toolchains_arm_gnu//:extensions.bzl",
+    "arm_toolchain",
+    dev_dependency = True,
+)
+arm_toolchain.arm_none_eabi(version = "13.2.1-1.1")
+
 local_path_override(
     module_name = "rules_multitransition",
     path = "..",
