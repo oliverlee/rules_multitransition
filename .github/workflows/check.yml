@@ -134,6 +134,43 @@ jobs:
             "gcr.io/bazel-public/$(read_presubmit "$task.platform")" \
             sh /presubmit.sh
 
+  # Runs 'run_test_module_macos' from '.bcr/presubmit.yml' on the host, as Bazel
+  # CI does for macOS.
+  bcr-presubmit-macos:
+    needs: bcr-presubmit-matrix
+    strategy:
+      fail-fast: false
+      matrix:
+        bazel: ${{ fromJSON(needs.bcr-presubmit-matrix.outputs.bazel) }}
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - shell: bash
+        env:
+          USE_BAZEL_VERSION: ${{ matrix.bazel }}
+          INCOMPATIBLE_FLAGS: ${{ needs.bcr-presubmit-matrix.outputs.incompatible-flags }}
+        run: |
+          module='.bcr_test_module'
+          task="$module.tasks.run_test_module_macos"
+          read_presubmit() { yq "$1" .bcr/presubmit.yml; }
+
+          # this job only runs Bazel
+          test "$(read_presubmit "$task | has(\"environment\") or has(\"shell_commands\")")" = false
+
+          args=()
+          while IFS= read -r arg; do
+            args+=("$arg")
+          done < <(
+            read_presubmit "$task.test_flags[]"
+            yq '.[]' <<< "$INCOMPATIBLE_FLAGS"
+            echo --
+            read_presubmit "$task.test_targets[]"
+          )
+
+          cd "$(read_presubmit "$module.module_path")"
+          # like bazelci.py, force color: the runner has no terminal
+          bazel test --color=yes "${args[@]}"
+
   # https://emmer.dev/blog/skippable-github-status-checks-aren-t-really-required/
   # https://github.com/marketplace/actions/alls-green
   all:
@@ -144,6 +181,7 @@ jobs:
       - integration-tests
       - buildifier
       - bcr-presubmit-nix
+      - bcr-presubmit-macos
     steps:
       - uses: Kesin11/actions-timeline@v2
       - uses: re-actors/alls-green@release/v1
