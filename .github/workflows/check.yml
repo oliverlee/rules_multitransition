@@ -53,6 +53,8 @@ jobs:
       - uses: ./.github/actions/ci-env-setup
         with:
           buildbuddy-api-key: ${{ secrets.BUILDBUDDY_API_KEY }}
+          # these tests skip 'cortex_m', which needs QEMU
+          nix-cache: ${{ !endsWith(matrix.test, ':examples_bazel_7.1.0') && !endsWith(matrix.test, ':minimum_versions') }}
       - run: |
           bazel test --test_output=streamed ${{ matrix.test }}
 
