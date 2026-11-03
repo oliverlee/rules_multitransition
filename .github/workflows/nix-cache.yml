@@ -1,0 +1,40 @@
+name: nix-cache
+
+# Saves Nix store with QEMU for integration tests in 'check.yml' to restore.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  save:
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - "ubuntu-latest"
+          - "macos-latest"
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/ci-env-setup
+        with:
+          buildbuddy-api-key: ${{ secrets.BUILDBUDDY_API_KEY }}
+
+      - id: qemu
+        working-directory: examples
+        run: |
+          bazel fetch --repo=@cortex_m
+          path=$(nix eval --raw "path:$(bazel info output_base)/external/cortex_m+/extensions#qemu.outPath")
+          echo "path=$path" >> "$GITHUB_OUTPUT"
+          echo "hash=$(basename "$path" | cut -d- -f1)" >> "$GITHUB_OUTPUT"
+
+      # Restores only a cache of the same QEMU, which keeps earlier versions
+      # of QEMU out of saved Nix store.
+      - uses: nix-community/cache-nix-action@v6
+        with:
+          primary-key: nix-${{ runner.os }}-qemu-${{ steps.qemu.outputs.hash }}
+
+      - run: |
+          nix-store --realise "${{ steps.qemu.outputs.path }}"
