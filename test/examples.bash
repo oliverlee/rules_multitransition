@@ -12,4 +12,4 @@ fi
 
 cd examples
 # shellcheck disable=SC2086
-exec "$BIT_BAZEL_BINARY" test --color=yes --curses=no $BAZEL_TEST_OPTS "$@"
+exec "$BIT_BAZEL_BINARY" test $BAZEL_TEST_OPTS "$@"

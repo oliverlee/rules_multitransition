@@ -13,10 +13,13 @@ rm -rf "$dir/src"
 mkdir -p "$dir/src"
 tar -x -f "$RUNFILES_DIR/$ARCHIVE" -C "$dir/src"
 
-# ignored by git
-if [[ -f "$BAZEL_WORKSPACE_ROOT/user.bazelrc" ]]; then
-  ln -s "$BAZEL_WORKSPACE_ROOT/user.bazelrc" "$dir/src/user.bazelrc"
-fi
+# ignored by git; flags for every inner invocation
+cat > "$dir/src/user.bazelrc" <<EOF
+try-import $BAZEL_WORKSPACE_ROOT/user.bazelrc
+common --color=yes
+common --curses=no
+build:remote-cache --bes_upload_mode=wait_for_upload_complete
+EOF
 
 # the default of bazelisk, instead of the runfiles directory
 if [[ "$OSTYPE" == darwin* ]]; then

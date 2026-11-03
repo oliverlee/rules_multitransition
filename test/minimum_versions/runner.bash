@@ -10,8 +10,6 @@ cp "$RUNFILES_DIR/$MODULE_FILE" examples/MODULE.bazel
 
 cd examples
 exec "$BIT_BAZEL_BINARY" test \
-  --color=yes \
-  --curses=no \
   --lockfile_mode=off \
   --check_direct_dependencies=error \
   //compilation_mode/... \
